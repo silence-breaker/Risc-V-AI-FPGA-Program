@@ -1,27 +1,30 @@
 #!/usr/bin/env python3
 """
-BitNet b1.58-2B-4T-bf16 推理性能分析脚本
+BitNet b1.58-2B-4T 推理性能分析脚本 (增强版)
 
 功能：
 1. 加载 HuggingFace 上的 BitNet 模型
-2. 分析纯 CPU 推理各阶段的时间开销
-3. 监控内存占用情况
+2. 对每个线性层 (Linear Layer) 进行计时分析
+3. 监控每层的内存占用情况
 4. 进行 CPU 频率归一化
+5. 生成 Markdown 格式的详细报告
 
 作者: RISC-V AI FPGA 项目组
-日期: 2026-01-17
+日期: 2026-01-18
 """
 
 import os
 import time
-import json
 import argparse
 from datetime import datetime
-from typing import Dict, List, Tuple, Optional
-from dataclasses import dataclass, asdict
+from typing import Dict, List, Tuple, Optional, Any
+from dataclasses import dataclass, field
 from contextlib import contextmanager
+from collections import defaultdict
+import functools
 
 import torch
+import torch.nn as nn
 import psutil
 import cpuinfo
 import numpy as np
@@ -30,7 +33,7 @@ from tqdm import tqdm
 
 # 强制使用 CPU
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
-torch.set_num_threads(1)  # 单线程便于分析
+# 不再限制线程数，使用系统默认配置
 
 
 @dataclass
@@ -49,7 +52,6 @@ class CPUInfo:
         info = cpuinfo.get_cpu_info()
         freq = psutil.cpu_freq()
         
-        # 尝试从多个来源获取 CPU 频率
         freq_base = 0.0
         freq_current = 0.0
         
@@ -57,11 +59,9 @@ class CPUInfo:
             freq_base = freq.max if freq.max else freq.current
             freq_current = freq.current if freq.current else freq.max
         
-        # 如果 psutil 获取失败，尝试从 cpuinfo 获取
         if freq_base == 0:
             hz_actual = info.get("hz_actual_friendly", "")
             hz_advertised = info.get("hz_advertised_friendly", "")
-            # 尝试解析如 "2.4000 GHz" 格式
             for hz_str in [hz_actual, hz_advertised]:
                 if "GHz" in hz_str:
                     try:
@@ -76,9 +76,8 @@ class CPUInfo:
                     except:
                         pass
         
-        # 最后的备选：使用合理的默认值
         if freq_base == 0:
-            freq_base = 3000.0  # 假设 3.0 GHz 作为默认值
+            freq_base = 3000.0
             print("警告: 无法获取 CPU 频率，使用默认值 3000 MHz")
         
         if freq_current == 0:
@@ -98,8 +97,8 @@ class CPUInfo:
 class MemorySnapshot:
     """内存快照"""
     timestamp: float
-    rss_mb: float        # 进程常驻内存
-    vms_mb: float        # 虚拟内存
+    rss_mb: float
+    vms_mb: float
     system_used_mb: float
     system_total_mb: float
     
@@ -119,16 +118,32 @@ class MemorySnapshot:
 
 
 @dataclass
+class LayerProfile:
+    """单层性能数据"""
+    layer_name: str
+    layer_type: str
+    call_count: int = 0
+    total_time_ms: float = 0.0
+    total_time_normalized_ms: float = 0.0
+    memory_before_mb: float = 0.0
+    memory_after_mb: float = 0.0
+    memory_delta_mb: float = 0.0
+    input_shape: str = ""
+    output_shape: str = ""
+    params_count: int = 0
+
+
+@dataclass
 class StageProfile:
-    """单阶段性能数据"""
+    """推理阶段性能数据"""
     name: str
     duration_ms: float
-    duration_normalized_ms: float  # 频率归一化后的时间
+    duration_normalized_ms: float
     memory_before_mb: float
     memory_after_mb: float
     memory_delta_mb: float
-    
-    
+
+
 @dataclass
 class TokenProfile:
     """单 Token 生成性能数据"""
@@ -139,17 +154,135 @@ class TokenProfile:
     memory_mb: float
 
 
-class InferenceProfiler:
-    """推理性能分析器"""
+class LayerProfiler:
+    """层级性能分析器 - 使用 Hook 机制追踪每层的执行"""
     
-    # 参考 CPU 频率（用于归一化，选择 3.0 GHz 作为基准）
+    def __init__(self, freq_scale: float = 1.0):
+        self.freq_scale = freq_scale
+        self.layer_profiles: Dict[str, LayerProfile] = {}
+        self.hooks: List[torch.utils.hooks.RemovableHandle] = []
+        self.start_time = time.perf_counter()
+        self.enabled = False
+        self._current_layer_start: Dict[str, float] = {}
+        self._current_layer_mem: Dict[str, float] = {}
+        
+    def _normalize_time(self, duration_ms: float) -> float:
+        """CPU 频率归一化"""
+        return duration_ms * self.freq_scale
+    
+    def _get_memory_mb(self) -> float:
+        """获取当前进程内存占用 (MB)"""
+        return psutil.Process().memory_info().rss / (1024 ** 2)
+    
+    def _create_forward_pre_hook(self, layer_name: str):
+        """创建前向传播前置钩子"""
+        def hook(module, input):
+            if not self.enabled:
+                return
+            self._current_layer_start[layer_name] = time.perf_counter()
+            self._current_layer_mem[layer_name] = self._get_memory_mb()
+        return hook
+    
+    def _create_forward_hook(self, layer_name: str, layer_type: str, params_count: int):
+        """创建前向传播后置钩子"""
+        def hook(module, input, output):
+            if not self.enabled:
+                return
+            
+            start_time = self._current_layer_start.get(layer_name, time.perf_counter())
+            mem_before = self._current_layer_mem.get(layer_name, 0)
+            
+            duration_ms = (time.perf_counter() - start_time) * 1000
+            mem_after = self._get_memory_mb()
+            
+            # 获取输入输出形状
+            input_shape = ""
+            output_shape = ""
+            try:
+                if isinstance(input, tuple) and len(input) > 0:
+                    if hasattr(input[0], 'shape'):
+                        input_shape = str(tuple(input[0].shape))
+                if hasattr(output, 'shape'):
+                    output_shape = str(tuple(output.shape))
+            except:
+                pass
+            
+            # 更新或创建层性能数据
+            if layer_name not in self.layer_profiles:
+                self.layer_profiles[layer_name] = LayerProfile(
+                    layer_name=layer_name,
+                    layer_type=layer_type,
+                    params_count=params_count,
+                )
+            
+            profile = self.layer_profiles[layer_name]
+            profile.call_count += 1
+            profile.total_time_ms += duration_ms
+            profile.total_time_normalized_ms += self._normalize_time(duration_ms)
+            profile.memory_after_mb = mem_after
+            profile.memory_delta_mb = mem_after - mem_before
+            profile.input_shape = input_shape
+            profile.output_shape = output_shape
+            if profile.memory_before_mb == 0:
+                profile.memory_before_mb = mem_before
+                
+        return hook
+    
+    def register_hooks(self, model: nn.Module, target_types: Tuple[type, ...] = (nn.Linear,)):
+        """注册钩子到模型的指定层类型"""
+        for name, module in model.named_modules():
+            if isinstance(module, target_types):
+                layer_type = module.__class__.__name__
+                params_count = sum(p.numel() for p in module.parameters())
+                
+                # 注册前向传播前置和后置钩子
+                pre_hook = module.register_forward_pre_hook(
+                    self._create_forward_pre_hook(name)
+                )
+                post_hook = module.register_forward_hook(
+                    self._create_forward_hook(name, layer_type, params_count)
+                )
+                self.hooks.append(pre_hook)
+                self.hooks.append(post_hook)
+        
+        print(f"已注册 {len(self.hooks)//2} 个层的性能追踪钩子")
+    
+    def enable(self):
+        """启用性能追踪"""
+        self.enabled = True
+        
+    def disable(self):
+        """禁用性能追踪"""
+        self.enabled = False
+    
+    def reset(self):
+        """重置性能数据"""
+        self.layer_profiles.clear()
+        self._current_layer_start.clear()
+        self._current_layer_mem.clear()
+        
+    def remove_hooks(self):
+        """移除所有钩子"""
+        for hook in self.hooks:
+            hook.remove()
+        self.hooks.clear()
+    
+    def get_sorted_profiles(self, sort_by: str = "total_time_ms") -> List[LayerProfile]:
+        """获取按指定字段排序的层性能数据"""
+        profiles = list(self.layer_profiles.values())
+        return sorted(profiles, key=lambda x: getattr(x, sort_by, 0), reverse=True)
+
+
+class InferenceProfiler:
+    """推理性能分析器 (增强版)"""
+    
     REFERENCE_FREQ_MHZ = 3000.0
     
     def __init__(
         self,
-        model_name: str = "../models/BitNet b1.58-2B-4T-bf16",  # 本地模型路径
+        model_name: str = "../models/BitNet b1.58-2B-4T-bf16",
         device: str = "cpu",
-        dtype: torch.dtype = torch.bfloat16,  # BitNet 推荐使用 bfloat16
+        dtype: torch.dtype = torch.float32,
     ):
         self.model_name = model_name
         self.device = device
@@ -159,24 +292,19 @@ class InferenceProfiler:
         self.tokenizer = None
         
         self.cpu_info = CPUInfo.collect()
-        # 频率归一化: 实测时间 × (实际频率 / 参考频率)
-        # 这样高频 CPU 的归一化时间会更短，反映其真实性能优势
         self.freq_scale = self.cpu_info.freq_base_mhz / self.REFERENCE_FREQ_MHZ
         print(f"CPU 频率: {self.cpu_info.freq_base_mhz:.0f} MHz, 归一化系数: {self.freq_scale:.3f}")
+        print(f"CPU 核心数: {self.cpu_info.cores_physical} 物理核 / {self.cpu_info.cores_logical} 逻辑核")
+        print(f"PyTorch 线程数: {torch.get_num_threads()}")
         
         self.start_time = time.perf_counter()
         self.stage_profiles: List[StageProfile] = []
         self.memory_timeline: List[MemorySnapshot] = []
+        self.layer_profiler: Optional[LayerProfiler] = None
+        self.token_profiles: List[TokenProfile] = []
         
     def _normalize_time(self, duration_ms: float) -> float:
-        """
-        CPU 频率归一化
-        
-        将实测时间转换为参考频率（3.0 GHz）下的等效时间
-        归一化时间 = 实测时间 × (实际频率 / 参考频率)
-        
-        这样可以在不同 CPU 之间公平比较性能
-        """
+        """CPU 频率归一化"""
         return duration_ms * self.freq_scale
     
     @contextmanager
@@ -221,13 +349,19 @@ class InferenceProfiler:
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_name,
                 torch_dtype=self.dtype,
-                low_cpu_mem_usage=True,  # 低内存模式，逐层加载
+                low_cpu_mem_usage=True,
             )
             self.model.eval()
         
         # 统计模型参数
         total_params = sum(p.numel() for p in self.model.parameters())
+        linear_count = sum(1 for m in self.model.modules() if isinstance(m, nn.Linear))
         print(f"\n模型参数量: {total_params / 1e9:.2f}B")
+        print(f"Linear 层数量: {linear_count}")
+        
+        # 初始化层级分析器
+        self.layer_profiler = LayerProfiler(freq_scale=self.freq_scale)
+        self.layer_profiler.register_hooks(self.model, target_types=(nn.Linear,))
     
     def run_inference(
         self,
@@ -235,23 +369,17 @@ class InferenceProfiler:
         max_new_tokens: int = 50,
         temperature: float = 0.7,
     ) -> Tuple[str, List[TokenProfile]]:
-        """
-        执行推理并分析性能
-        
-        返回:
-            - 生成的文本
-            - 每个 token 的性能数据
-        """
+        """执行推理并分析性能"""
         print(f"\n{'='*60}")
         print(f"执行推理")
         print(f"{'='*60}")
         print(f"Prompt: {prompt}")
         print(f"Max new tokens: {max_new_tokens}")
         
-        token_profiles: List[TokenProfile] = []
+        self.token_profiles = []
         generated_ids = []
         
-        # 1. Tokenization（编码阶段）
+        # 1. Tokenization
         with self._profile_stage("Tokenization (编码)"):
             inputs = self.tokenizer(
                 prompt,
@@ -263,7 +391,11 @@ class InferenceProfiler:
             
         print(f"  输入 token 数: {input_ids.shape[1]}")
         
-        # 2. Prefill 阶段（首次前向传播，处理整个 prompt）
+        # 启用层级分析
+        self.layer_profiler.enable()
+        self.layer_profiler.reset()
+        
+        # 2. Prefill 阶段
         with self._profile_stage("Prefill (首次前向)"):
             with torch.no_grad():
                 outputs = self.model(
@@ -274,36 +406,33 @@ class InferenceProfiler:
                 past_key_values = outputs.past_key_values
                 next_token_logits = outputs.logits[:, -1, :]
         
-        # 3. Decode 阶段（逐 token 生成）
+        # 3. Decode 阶段
         print(f"\n  开始 Decode 阶段 (逐 token 生成)...")
         
         current_ids = input_ids
+        decode_start_time = time.perf_counter()
         
         for i in tqdm(range(max_new_tokens), desc="  生成中"):
             mem_snapshot = MemorySnapshot.capture(self.start_time)
             start_token_time = time.perf_counter()
             
             with torch.no_grad():
-                # 采样下一个 token
                 if temperature > 0:
                     probs = torch.softmax(next_token_logits / temperature, dim=-1)
                     next_token = torch.multinomial(probs, num_samples=1)
                 else:
                     next_token = torch.argmax(next_token_logits, dim=-1, keepdim=True)
                 
-                # 检查是否结束
                 if next_token.item() == self.tokenizer.eos_token_id:
                     break
                 
                 generated_ids.append(next_token.item())
                 
-                # 更新 attention mask
                 attention_mask = torch.cat([
                     attention_mask,
                     torch.ones((1, 1), dtype=attention_mask.dtype)
                 ], dim=1)
                 
-                # 前向传播获取下一个 token 的 logits
                 outputs = self.model(
                     input_ids=next_token,
                     attention_mask=attention_mask,
@@ -316,7 +445,7 @@ class InferenceProfiler:
             token_time_ms = (time.perf_counter() - start_token_time) * 1000
             token_text = self.tokenizer.decode([next_token.item()])
             
-            token_profiles.append(TokenProfile(
+            self.token_profiles.append(TokenProfile(
                 token_id=next_token.item(),
                 token_text=token_text,
                 time_ms=token_time_ms,
@@ -324,108 +453,286 @@ class InferenceProfiler:
                 memory_mb=mem_snapshot.rss_mb,
             ))
         
+        # 禁用层级分析
+        self.layer_profiler.disable()
+        
         # 统计 Decode 阶段
-        if token_profiles:
-            decode_times = [t.time_ms for t in token_profiles]
+        if self.token_profiles:
+            decode_times = [t.time_ms for t in self.token_profiles]
+            decode_total_ms = (time.perf_counter() - decode_start_time) * 1000
+            
             self.stage_profiles.append(StageProfile(
                 name="Decode (逐token生成)",
-                duration_ms=sum(decode_times),
-                duration_normalized_ms=self._normalize_time(sum(decode_times)),
-                memory_before_mb=token_profiles[0].memory_mb,
-                memory_after_mb=token_profiles[-1].memory_mb,
-                memory_delta_mb=token_profiles[-1].memory_mb - token_profiles[0].memory_mb,
+                duration_ms=decode_total_ms,
+                duration_normalized_ms=self._normalize_time(decode_total_ms),
+                memory_before_mb=self.token_profiles[0].memory_mb,
+                memory_after_mb=self.token_profiles[-1].memory_mb,
+                memory_delta_mb=self.token_profiles[-1].memory_mb - self.token_profiles[0].memory_mb,
             ))
             
-            print(f"\n  生成 {len(token_profiles)} 个 token")
+            print(f"\n  生成 {len(self.token_profiles)} 个 token")
             print(f"  平均每 token: {np.mean(decode_times):.2f}ms "
                   f"(归一化: {self._normalize_time(np.mean(decode_times)):.2f}ms)")
             print(f"  吞吐量: {1000 / np.mean(decode_times):.2f} tokens/s")
         
-        # 4. Detokenization（解码阶段）
+        # 4. Detokenization
         with self._profile_stage("Detokenization (解码)"):
             generated_text = self.tokenizer.decode(generated_ids, skip_special_tokens=True)
         
         full_response = prompt + generated_text
         print(f"\n生成结果: {generated_text}")
         
-        return full_response, token_profiles
+        return full_response, self.token_profiles
     
-    def generate_report(self, output_dir: str = "../docs") -> Dict:
-        """生成性能分析报告"""
+    def generate_markdown_report(self, output_dir: str = "../docs") -> str:
+        """生成 Markdown 格式的性能分析报告"""
         print(f"\n{'='*60}")
-        print("性能分析报告")
+        print("生成 Markdown 性能分析报告")
         print(f"{'='*60}")
         
-        report = {
-            "meta": {
-                "model_name": self.model_name,
-                "timestamp": datetime.now().isoformat(),
-                "reference_freq_mhz": self.REFERENCE_FREQ_MHZ,
-            },
-            "cpu_info": asdict(self.cpu_info),
-            "freq_normalization": {
-                "actual_freq_mhz": self.cpu_info.freq_base_mhz,
-                "reference_freq_mhz": self.REFERENCE_FREQ_MHZ,
-                "scale_factor": self.freq_scale,
-                "explanation": "归一化时间 = 实测时间 × (实际频率 / 参考频率)",
-            },
-            "stage_profiles": [asdict(s) for s in self.stage_profiles],
-            "summary": {},
-        }
-        
-        # 汇总统计
+        # 计算汇总数据
         total_time = sum(s.duration_ms for s in self.stage_profiles)
         total_normalized = sum(s.duration_normalized_ms for s in self.stage_profiles)
-        peak_memory = max(s.memory_after_mb for s in self.stage_profiles)
+        peak_memory = max(s.memory_after_mb for s in self.stage_profiles) if self.stage_profiles else 0
         
-        report["summary"] = {
-            "total_time_ms": total_time,
-            "total_time_normalized_ms": total_normalized,
-            "peak_memory_mb": peak_memory,
-            "stages_breakdown": {
-                s.name: {
-                    "time_ms": s.duration_ms,
-                    "time_percent": s.duration_ms / total_time * 100,
-                    "time_normalized_ms": s.duration_normalized_ms,
-                    "memory_delta_mb": s.memory_delta_mb,
-                }
-                for s in self.stage_profiles
-            },
-        }
+        # 获取层级分析数据
+        layer_profiles = self.layer_profiler.get_sorted_profiles("total_time_ms") if self.layer_profiler else []
+        total_layer_time = sum(lp.total_time_ms for lp in layer_profiles)
         
-        # 打印汇总
-        print(f"\nCPU: {self.cpu_info.brand}")
-        print(f"基准频率: {self.cpu_info.freq_base_mhz:.0f} MHz")
-        print(f"频率归一化系数: {self.freq_scale:.3f}")
+        # 构建 Markdown 内容
+        md_lines = []
         
-        print(f"\n{'阶段':<25} {'耗时(ms)':<12} {'归一化(ms)':<12} {'占比':<10} {'内存变化(MB)':<12}")
-        print("-" * 75)
+        # 标题和元信息
+        md_lines.append("# BitNet b1.58 推理性能分析报告\n")
+        md_lines.append(f"**生成时间**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        md_lines.append(f"**模型路径**: `{self.model_name}`\n")
+        md_lines.append(f"**数据类型**: `{self.dtype}`\n")
+        md_lines.append("")
+        
+        # CPU 信息
+        md_lines.append("## 1. 系统信息\n")
+        md_lines.append("### CPU 配置\n")
+        md_lines.append(f"| 属性 | 值 |")
+        md_lines.append(f"|------|-----|")
+        md_lines.append(f"| CPU 型号 | {self.cpu_info.brand} |")
+        md_lines.append(f"| 架构 | {self.cpu_info.arch} |")
+        md_lines.append(f"| 物理核心数 | {self.cpu_info.cores_physical} |")
+        md_lines.append(f"| 逻辑核心数 | {self.cpu_info.cores_logical} |")
+        md_lines.append(f"| 基准频率 | {self.cpu_info.freq_base_mhz:.0f} MHz |")
+        md_lines.append(f"| 当前频率 | {self.cpu_info.freq_current_mhz:.0f} MHz |")
+        md_lines.append(f"| PyTorch 线程数 | {torch.get_num_threads()} |")
+        md_lines.append("")
+        
+        # 频率归一化说明
+        md_lines.append("### 频率归一化\n")
+        md_lines.append(f"- **参考频率**: {self.REFERENCE_FREQ_MHZ:.0f} MHz")
+        md_lines.append(f"- **归一化系数**: {self.freq_scale:.3f}")
+        md_lines.append(f"- **计算公式**: `归一化时间 = 实测时间 × (实际频率 / 参考频率)`")
+        md_lines.append("")
+        
+        # 推理阶段分析
+        md_lines.append("## 2. 推理阶段分析\n")
+        md_lines.append("| 阶段 | 耗时 (ms) | 归一化耗时 (ms) | 占比 (%) | 内存变化 (MB) |")
+        md_lines.append("|------|-----------|-----------------|----------|---------------|")
+        
         for s in self.stage_profiles:
-            pct = s.duration_ms / total_time * 100
-            print(f"{s.name:<25} {s.duration_ms:<12.2f} {s.duration_normalized_ms:<12.2f} "
-                  f"{pct:<10.1f}% {s.memory_delta_mb:<+12.2f}")
-        print("-" * 75)
-        print(f"{'总计':<25} {total_time:<12.2f} {total_normalized:<12.2f} {'100.0':<10}%")
-        print(f"\n峰值内存占用: {peak_memory:.2f} MB")
+            pct = (s.duration_ms / total_time * 100) if total_time > 0 else 0
+            md_lines.append(f"| {s.name} | {s.duration_ms:.2f} | {s.duration_normalized_ms:.2f} | {pct:.1f} | {s.memory_delta_mb:+.2f} |")
         
-        # 保存报告
+        md_lines.append(f"| **总计** | **{total_time:.2f}** | **{total_normalized:.2f}** | **100.0** | - |")
+        md_lines.append("")
+        
+        # 汇总统计
+        md_lines.append("### 汇总统计\n")
+        md_lines.append(f"- **总推理时间**: {total_time:.2f} ms ({total_time/1000:.2f} s)")
+        md_lines.append(f"- **归一化总时间**: {total_normalized:.2f} ms")
+        md_lines.append(f"- **峰值内存占用**: {peak_memory:.2f} MB ({peak_memory/1024:.2f} GB)")
+        
+        if self.token_profiles:
+            decode_times = [t.time_ms for t in self.token_profiles]
+            md_lines.append(f"- **生成 Token 数**: {len(self.token_profiles)}")
+            md_lines.append(f"- **平均每 Token 耗时**: {np.mean(decode_times):.2f} ms")
+            md_lines.append(f"- **推理吞吐量**: {1000 / np.mean(decode_times):.2f} tokens/s")
+        md_lines.append("")
+        
+        # 线性层分析
+        if layer_profiles:
+            md_lines.append("## 3. 线性层 (Linear Layer) 详细分析\n")
+            md_lines.append(f"**总计 Linear 层数量**: {len(layer_profiles)}\n")
+            md_lines.append(f"**Linear 层总耗时**: {total_layer_time:.2f} ms\n")
+            md_lines.append("")
+            
+            # Top 20 最耗时的层
+            md_lines.append("### 3.1 最耗时的 Linear 层 (Top 20)\n")
+            md_lines.append("| 排名 | 层名称 | 调用次数 | 总耗时 (ms) | 归一化耗时 (ms) | 占比 (%) | 参数量 |")
+            md_lines.append("|------|--------|----------|-------------|-----------------|----------|--------|")
+            
+            for i, lp in enumerate(layer_profiles[:20], 1):
+                pct = (lp.total_time_ms / total_layer_time * 100) if total_layer_time > 0 else 0
+                params_str = f"{lp.params_count:,}" if lp.params_count < 1e6 else f"{lp.params_count/1e6:.2f}M"
+                # 截断过长的层名称
+                layer_name = lp.layer_name if len(lp.layer_name) <= 50 else "..." + lp.layer_name[-47:]
+                md_lines.append(f"| {i} | `{layer_name}` | {lp.call_count} | {lp.total_time_ms:.2f} | {lp.total_time_normalized_ms:.2f} | {pct:.2f} | {params_str} |")
+            md_lines.append("")
+            
+            # 按模块分组统计
+            md_lines.append("### 3.2 按模块分组统计\n")
+            
+            module_stats: Dict[str, Dict[str, Any]] = defaultdict(lambda: {
+                "count": 0, "total_time_ms": 0, "total_params": 0, "layers": []
+            })
+            
+            for lp in layer_profiles:
+                # 解析模块名称 (例如 model.layers.0.self_attn.q_proj -> self_attn.q_proj)
+                parts = lp.layer_name.split(".")
+                if "layers" in parts:
+                    # Transformer 层内的模块
+                    layer_idx = parts.index("layers")
+                    if layer_idx + 2 < len(parts):
+                        module_type = ".".join(parts[layer_idx+2:])
+                    else:
+                        module_type = parts[-1]
+                else:
+                    module_type = parts[-1] if parts else "unknown"
+                
+                module_stats[module_type]["count"] += 1
+                module_stats[module_type]["total_time_ms"] += lp.total_time_ms
+                module_stats[module_type]["total_params"] += lp.params_count
+                module_stats[module_type]["layers"].append(lp.layer_name)
+            
+            # 按耗时排序
+            sorted_modules = sorted(module_stats.items(), key=lambda x: x[1]["total_time_ms"], reverse=True)
+            
+            md_lines.append("| 模块类型 | 层数量 | 总耗时 (ms) | 占比 (%) | 总参数量 |")
+            md_lines.append("|----------|--------|-------------|----------|----------|")
+            
+            for module_type, stats in sorted_modules:
+                pct = (stats["total_time_ms"] / total_layer_time * 100) if total_layer_time > 0 else 0
+                params_str = f"{stats['total_params']:,}" if stats['total_params'] < 1e6 else f"{stats['total_params']/1e6:.2f}M"
+                md_lines.append(f"| `{module_type}` | {stats['count']} | {stats['total_time_ms']:.2f} | {pct:.2f} | {params_str} |")
+            md_lines.append("")
+            
+            # 完整层列表 (折叠)
+            md_lines.append("### 3.3 完整 Linear 层列表\n")
+            md_lines.append("<details>")
+            md_lines.append("<summary>点击展开完整列表 (共 {} 层)</summary>\n".format(len(layer_profiles)))
+            md_lines.append("| 层名称 | 调用次数 | 总耗时 (ms) | 占比 (%) | 输入形状 | 输出形状 | 参数量 |")
+            md_lines.append("|--------|----------|-------------|----------|----------|----------|--------|")
+            
+            for lp in layer_profiles:
+                pct = (lp.total_time_ms / total_layer_time * 100) if total_layer_time > 0 else 0
+                params_str = f"{lp.params_count:,}" if lp.params_count < 1e6 else f"{lp.params_count/1e6:.2f}M"
+                md_lines.append(f"| `{lp.layer_name}` | {lp.call_count} | {lp.total_time_ms:.2f} | {pct:.2f} | {lp.input_shape} | {lp.output_shape} | {params_str} |")
+            
+            md_lines.append("\n</details>")
+            md_lines.append("")
+        
+        # Token 生成详情
+        if self.token_profiles:
+            md_lines.append("## 4. Token 生成详情\n")
+            
+            decode_times = [t.time_ms for t in self.token_profiles]
+            md_lines.append("### 4.1 统计信息\n")
+            md_lines.append(f"- **生成 Token 数**: {len(self.token_profiles)}")
+            md_lines.append(f"- **最小耗时**: {min(decode_times):.2f} ms")
+            md_lines.append(f"- **最大耗时**: {max(decode_times):.2f} ms")
+            md_lines.append(f"- **平均耗时**: {np.mean(decode_times):.2f} ms")
+            md_lines.append(f"- **标准差**: {np.std(decode_times):.2f} ms")
+            md_lines.append(f"- **中位数**: {np.median(decode_times):.2f} ms")
+            md_lines.append("")
+            
+            # Token 列表 (折叠)
+            md_lines.append("### 4.2 Token 生成列表\n")
+            md_lines.append("<details>")
+            md_lines.append("<summary>点击展开完整列表 (共 {} 个 Token)</summary>\n".format(len(self.token_profiles)))
+            md_lines.append("| 序号 | Token ID | Token 文本 | 耗时 (ms) | 归一化耗时 (ms) | 内存 (MB) |")
+            md_lines.append("|------|----------|------------|-----------|-----------------|-----------|")
+            
+            for i, tp in enumerate(self.token_profiles, 1):
+                token_text = tp.token_text.replace("|", "\\|").replace("\n", "\\n")
+                if len(token_text) > 20:
+                    token_text = token_text[:17] + "..."
+                md_lines.append(f"| {i} | {tp.token_id} | `{token_text}` | {tp.time_ms:.2f} | {tp.time_normalized_ms:.2f} | {tp.memory_mb:.2f} |")
+            
+            md_lines.append("\n</details>")
+            md_lines.append("")
+        
+        # 内存时间线
+        md_lines.append("## 5. 内存占用时间线\n")
+        md_lines.append("| 时间点 (s) | 进程 RSS (MB) | 虚拟内存 (MB) | 系统已用 (MB) | 系统总量 (MB) |")
+        md_lines.append("|------------|---------------|---------------|---------------|---------------|")
+        
+        for mem in self.memory_timeline:
+            md_lines.append(f"| {mem.timestamp:.2f} | {mem.rss_mb:.2f} | {mem.vms_mb:.2f} | {mem.system_used_mb:.2f} | {mem.system_total_mb:.2f} |")
+        md_lines.append("")
+        
+        # FPGA 加速建议
+        md_lines.append("## 6. FPGA 加速建议\n")
+        
+        if layer_profiles:
+            top5_layers = layer_profiles[:5]
+            top5_time = sum(lp.total_time_ms for lp in top5_layers)
+            top5_pct = (top5_time / total_layer_time * 100) if total_layer_time > 0 else 0
+            
+            md_lines.append("### 加速目标层\n")
+            md_lines.append(f"根据性能分析，建议优先将以下层卸载到 FPGA 加速：\n")
+            md_lines.append(f"- **Top 5 层占比**: {top5_pct:.1f}% 的 Linear 层计算时间")
+            md_lines.append("")
+            
+            for i, lp in enumerate(top5_layers, 1):
+                pct = (lp.total_time_ms / total_layer_time * 100) if total_layer_time > 0 else 0
+                md_lines.append(f"{i}. `{lp.layer_name}`")
+                md_lines.append(f"   - 耗时占比: {pct:.2f}%")
+                md_lines.append(f"   - 参数量: {lp.params_count:,}")
+                md_lines.append(f"   - 输入形状: {lp.input_shape}")
+                md_lines.append(f"   - 输出形状: {lp.output_shape}")
+                md_lines.append("")
+        
+        md_lines.append("### 1.58-bit 量化收益预估\n")
+        md_lines.append("| 指标 | FP32 | 1.58-bit | 压缩比 |")
+        md_lines.append("|------|------|----------|--------|")
+        total_params = sum(lp.params_count for lp in layer_profiles) if layer_profiles else 0
+        fp32_size = total_params * 4 / (1024**2)  # MB
+        bit158_size = total_params * 2 / 8 / (1024**2)  # 2-bit packed
+        md_lines.append(f"| Linear 层权重大小 | {fp32_size:.2f} MB | {bit158_size:.2f} MB | {fp32_size/bit158_size:.1f}x |")
+        md_lines.append("")
+        
+        # 结论
+        md_lines.append("---\n")
+        md_lines.append("*本报告由 BitNet 推理性能分析工具自动生成*")
+        
+        # 写入文件
         os.makedirs(output_dir, exist_ok=True)
-        report_path = os.path.join(output_dir, "inference_profile_report.json")
+        report_path = os.path.join(output_dir, "inference_profile_report.md")
+        
         with open(report_path, "w", encoding="utf-8") as f:
-            json.dump(report, f, ensure_ascii=False, indent=2)
+            f.write("\n".join(md_lines))
+        
         print(f"\n报告已保存至: {report_path}")
         
-        return report
+        # 控制台输出汇总
+        print(f"\n{'='*60}")
+        print("性能分析汇总")
+        print(f"{'='*60}")
+        print(f"总推理时间: {total_time:.2f} ms")
+        print(f"峰值内存: {peak_memory:.2f} MB")
+        if self.token_profiles:
+            print(f"生成 Token 数: {len(self.token_profiles)}")
+            print(f"吞吐量: {1000 / np.mean([t.time_ms for t in self.token_profiles]):.2f} tokens/s")
+        print(f"Linear 层数量: {len(layer_profiles)}")
+        print(f"Linear 层总耗时: {total_layer_time:.2f} ms")
+        
+        return report_path
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="BitNet b1.58 模型推理性能分析"
+        description="BitNet b1.58 模型推理性能分析 (增强版)"
     )
     parser.add_argument(
         "--model",
         type=str,
-        default="../models",  # 本地模型路径
+        default="../models",
         help="模型路径（本地路径或 HuggingFace 模型名称）"
     )
     parser.add_argument(
@@ -437,7 +744,7 @@ def main():
     parser.add_argument(
         "--max-tokens",
         type=int,
-        default=250,
+        default=50,
         help="最大生成 token 数"
     )
     parser.add_argument(
@@ -463,7 +770,7 @@ def main():
     }
     
     print("=" * 60)
-    print("BitNet b1.58 推理性能分析")
+    print("BitNet b1.58 推理性能分析 (增强版)")
     print("=" * 60)
     print(f"时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
@@ -481,8 +788,12 @@ def main():
         max_new_tokens=args.max_tokens,
     )
     
-    # 生成报告
-    report = profiler.generate_report(output_dir=args.output_dir)
+    # 生成 Markdown 报告
+    report_path = profiler.generate_markdown_report(output_dir=args.output_dir)
+    
+    # 清理 hooks
+    if profiler.layer_profiler:
+        profiler.layer_profiler.remove_hooks()
     
     print("\n" + "=" * 60)
     print("分析完成!")

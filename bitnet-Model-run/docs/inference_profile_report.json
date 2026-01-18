@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "model_name": "../models",
+    "timestamp": "2026-01-18T18:25:40.310257",
+    "reference_freq_mhz": 3000.0
+  },
+  "cpu_info": {
+    "brand": "12th Gen Intel(R) Core(TM) i9-12900H",
+    "arch": "X86_64",
+    "cores_physical": 10,
+    "cores_logical": 20,
+    "freq_base_mhz": 2918.3819999999996,
+    "freq_current_mhz": 2918.3819999999996
+  },
+  "freq_normalization": {
+    "actual_freq_mhz": 2918.3819999999996,
+    "reference_freq_mhz": 3000.0,
+    "scale_factor": 0.9727939999999998,
+    "explanation": "归一化时间 = 实测时间 × (实际频率 / 参考频率)"
+  },
+  "stage_profiles": [
+    {
+      "name": "Tokenizer 加载",
+      "duration_ms": 268.45594600308686,
+      "duration_normalized_ms": 261.15233353612683,
+      "memory_before_mb": 530.796875,
+      "memory_after_mb": 603.3125,
+      "memory_delta_mb": 72.515625
+    },
+    {
+      "name": "Model 加载",
+      "duration_ms": 25753.50405400968,
+      "duration_normalized_ms": 25052.85422271629,
+      "memory_before_mb": 603.3125,
+      "memory_after_mb": 6096.20703125,
+      "memory_delta_mb": 5492.89453125
+    },
+    {
+      "name": "Tokenization (编码)",
+      "duration_ms": 73.26593299512751,
+      "duration_normalized_ms": 71.27266002206206,
+      "memory_before_mb": 6097.3828125,
+      "memory_after_mb": 6102.81640625,
+      "memory_delta_mb": 5.43359375
+    },
+    {
+      "name": "Prefill (首次前向)",
+      "duration_ms": 122360.68822699599,
+      "duration_normalized_ms": 119031.74334309231,
+      "memory_before_mb": 6102.81640625,
+      "memory_after_mb": 6528.2734375,
+      "memory_delta_mb": 425.45703125
+    },
+    {
+      "name": "Decode (逐token生成)",
+      "duration_ms": 3118485.0288940067,
+      "duration_normalized_ms": 3033643.5251979157,
+      "memory_before_mb": 6530.45703125,
+      "memory_after_mb": 4859.8984375,
+      "memory_delta_mb": -1670.55859375
+    },
+    {
+      "name": "Detokenization (解码)",
+      "duration_ms": 7.125791002181359,
+      "duration_normalized_ms": 6.931926732176011,
+      "memory_before_mb": 4798.7109375,
+      "memory_after_mb": 4799.15234375,
+      "memory_delta_mb": 0.44140625
+    }
+  ],
+  "summary": {
+    "total_time_ms": 3266948.0688450127,
+    "total_time_normalized_ms": 3178067.4796840143,
+    "peak_memory_mb": 6528.2734375,
+    "stages_breakdown": {
+      "Tokenizer 加载": {
+        "time_ms": 268.45594600308686,
+        "time_percent": 0.008217331293484441,
+        "time_normalized_ms": 261.15233353612683,
+        "memory_delta_mb": 72.515625
+      },
+      "Model 加载": {
+        "time_ms": 25753.50405400968,
+        "time_percent": 0.7883046657400496,
+        "time_normalized_ms": 25052.85422271629,
+        "memory_delta_mb": 5492.89453125
+      },
+      "Tokenization (编码)": {
+        "time_ms": 73.26593299512751,
+        "time_percent": 0.0022426414944829456,
+        "time_normalized_ms": 71.27266002206206,
+        "memory_delta_mb": 5.43359375
+      },
+      "Prefill (首次前向)": {
+        "time_ms": 122360.68822699599,
+        "time_percent": 3.7454127108379485,
+        "time_normalized_ms": 119031.74334309231,
+        "memory_delta_mb": 425.45703125
+      },
+      "Decode (逐token生成)": {
+        "time_ms": 3118485.0288940067,
+        "time_percent": 95.45560453296422,
+        "time_normalized_ms": 3033643.5251979157,
+        "memory_delta_mb": -1670.55859375
+      },
+      "Detokenization (解码)": {
+        "time_ms": 7.125791002181359,
+        "time_percent": 0.0002181176698257279,
+        "time_normalized_ms": 6.931926732176011,
+        "memory_delta_mb": 0.44140625
+      }
+    }
+  }
+}

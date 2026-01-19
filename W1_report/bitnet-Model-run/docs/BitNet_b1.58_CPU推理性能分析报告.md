@@ -168,14 +168,67 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 
 我们将所有稳定运行的 Decoder Layer（Layer 1-29）数据进行汇总平均，得到单层内部的时间分布情况。
 
+### 3.1 总体时间分布
+
 | 模块大类 | 具体组成 | 平均总耗时 (ms) | 占比 (%) |
 | --- | --- | --- | --- |
-| **MLP Block** | Gate + Up + Down | **40.68 ms** | **80.8%** |
-| **Attention Block** | Q + K + V + O | **9.65 ms** | **19.2%** |
+| **MLP Block (Linear)** | Gate + Up + Down | **34.63 ms** | **80.22%** |
+| **Attention Block (Linear)** | Q + K + V + O | **7.64 ms** | **17.70%** |
+| **Normalization (Non-Linear)** | 4× RMSNorm | **0.76 ms** | **1.77%** |
+| **Activation (Non-Linear)** | ReLU² | **0.14 ms** | **0.32%** |
 
-### 3.1 性能分布深度解析
+**Linear vs Non-Linear 汇总**：
 
-#### 3.1.1 MLP Block 主导地位分析
+| 类别 | 总耗时 (ms) | 占比 (%) |
+| --- | --- | --- |
+| **Linear 层** | **42.27 ms** | **97.92%** |
+| **Non-Linear 层** | **0.90 ms** | **2.08%** |
+
+> **关键发现**：Linear 层（AutoBitLinear）占据了 **97.92%** 的计算时间，Non-Linear 层（RMSNorm、激活函数）仅占 **2.08%**。这表明 FPGA 加速应主要聚焦于 BitLinear 算子的优化。
+
+### 3.2 Non-Linear 层详细分析
+
+#### 3.2.1 RMSNorm 归一化层
+
+每个 Decoder Layer 包含 **4 个 RMSNorm** 层：
+
+| RMSNorm 层 | 位置 | 输入维度 | 平均耗时 (ms) | 占比 (%) |
+| --- | --- | --- | --- | --- |
+| `input_layernorm` | Attention 前 | [1, 3, 2560] | 0.20 | 0.47% |
+| `attn_sub_norm` | Attention 输出后 | [1, 3, 2560] | 0.15 | 0.35% |
+| `post_attention_layernorm` | MLP 前 | [1, 3, 2560] | 0.19 | 0.44% |
+| `ffn_sub_norm` | FFN 中间 | [1, 3, 6912] | 0.22 | 0.50% |
+
+**RMSNorm 运算量分析**：
+- 计算公式：$\text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2 + \epsilon}} \cdot \gamma$
+- 运算复杂度：$O(3 \times B \times S \times H)$（平方、求和、除法）
+- `input_layernorm` 运算量：$3 \times 1 \times 3 \times 2560 = 23,040$ OPs
+- `ffn_sub_norm` 运算量：$3 \times 1 \times 3 \times 6912 = 62,208$ OPs
+
+**有效算力对比**：
+
+| 层 | 运算量 | 耗时 (ms) | 有效算力 (GOPS) |
+| --- | --- | --- | --- |
+| `input_layernorm` | 23,040 | 0.20 | 0.11 |
+| `ffn_sub_norm` | 62,208 | 0.22 | 0.29 |
+
+> RMSNorm 的有效算力仅为 **0.1-0.3 GOPS**，远低于 Linear 层的 **8-14 GOPS**。这是因为 RMSNorm 涉及开方、除法等复杂运算，且数据依赖性强，难以高效并行化。
+
+#### 3.2.2 激活函数层
+
+| 激活函数 | 类型 | 输入维度 | 平均耗时 (ms) | 占比 (%) |
+| --- | --- | --- | --- | --- |
+| `act_fn` | ReLUSquaredActivation | [1, 3, 6912] | 0.14 | 0.32% |
+
+**ReLU² 运算量分析**：
+- 计算公式：$\text{ReLU}^2(x) = (\max(0, x))^2$
+- 运算复杂度：$O(2 \times B \times S \times H)$（比较 + 平方）
+- 运算量：$2 \times 1 \times 3 \times 6912 = 41,472$ OPs
+- 有效算力：约 **0.30 GOPS**
+
+### 3.3 性能分布深度解析
+
+#### 3.3.1 MLP Block 主导地位分析
 
 **核心发现**：MLP Block 耗时占比高达 **80.8%**，成为单层推理的绝对性能瓶颈。
 
@@ -199,7 +252,7 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 - MLP Block 的加速将直接带来 **80%** 的性能提升潜力
 - FPGA 设计应优先分配资源给 MLP 算子
 
-#### 3.1.2 Attention Block 效率分析
+#### 3.3.2 Attention Block 效率分析
 
 **核心数据**：Attention Block 耗时 9.65 ms，占比 19.2%。
 
@@ -227,26 +280,49 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 
 模型稳定运行阶段（Stable Phase: Layers 1-29）的每种算子核心数据统计与分析如下：
 
-### 4.1 核心数据统计表
+### 4.1 Linear 层核心数据统计表
 
 | 算子名称 (Submodule) | 平均耗时 (ms) | 时间占比 (%) | 单次运算量 (OPs) | 算力占比 (%) | 有效算力 (GOPS) | 内存增量 (MB) |
 | --- | --- | --- | --- | --- | --- | --- |
-| **gate_proj** (MLP) | **14.06** | **27.93%** | **106.17 M** | **25.47%** | **7.55** | ~0.09 |
-| **up_proj** (MLP) | **13.49** | **26.82%** | **106.17 M** | **25.47%** | **7.87** | ~0.07 |
-| **down_proj** (MLP) | **13.13** | **26.09%** | **106.17 M** | **25.47%** | **8.09** | ~0.07 |
-| **q_proj** (Attn) | 4.40 | 8.74% | 39.32 M | 9.43% | 8.94 | ~0 |
-| **o_proj** (Attn) | 3.67 | 7.29% | 39.32 M | 9.43% | 10.72 | ~0 |
-| **k_proj** (Attn) | 0.86 | 1.72% | 9.83 M | 2.36% | 11.37 | ~0 |
-| **v_proj** (Attn) | 0.71 | 1.42% | 9.83 M | 2.36% | 13.76 | ~0 |
+| **gate_proj** (MLP) | **11.92** | **27.61%** | **106.17 M** | **25.46%** | **8.91** | ~0.06 |
+| **up_proj** (MLP) | **11.48** | **26.60%** | **106.17 M** | **25.46%** | **9.25** | ~0.07 |
+| **down_proj** (MLP) | **11.23** | **26.01%** | **106.17 M** | **25.46%** | **9.45** | ~0.04 |
+| **q_proj** (Attn) | 3.54 | 8.20% | 39.32 M | 9.43% | 11.11 | ~0 |
+| **o_proj** (Attn) | 2.89 | 6.71% | 39.32 M | 9.43% | 13.58 | ~0 |
+| **k_proj** (Attn) | 0.70 | 1.63% | 9.83 M | 2.36% | 14.00 | ~0 |
+| **v_proj** (Attn) | 0.50 | 1.16% | 9.83 M | 2.36% | 19.55 | ~0 |
 
-**总计每层**：
+### 4.2 Non-Linear 层核心数据统计表
 
-- **Total Time**: 50.32 ms
-- **Total OPs**: 416,808,960 (约 417M)
+| 算子名称 (Submodule) | 类型 | 平均耗时 (ms) | 时间占比 (%) | 单次运算量 (OPs) | 有效算力 (GOPS) | 内存增量 (MB) |
+| --- | --- | --- | --- | --- | --- | --- |
+| **ffn_sub_norm** | RMSNorm | 0.22 | 0.50% | 62,208 | 0.29 | ~0 |
+| **input_layernorm** | RMSNorm | 0.20 | 0.47% | 23,040 | 0.11 | ~0 |
+| **post_attention_layernorm** | RMSNorm | 0.19 | 0.44% | 23,040 | 0.12 | ~0 |
+| **attn_sub_norm** | RMSNorm | 0.15 | 0.35% | 23,040 | 0.15 | ~0 |
+| **act_fn** | ReLU² | 0.14 | 0.32% | 41,472 | 0.30 | ~0 |
 
-### 4.2 深度分析
+### 4.3 全局层（非 Decoder Layer 内）
 
-#### 4.2.1 算力瓶颈分析 (Compute Bound)
+| 层名称 | 类型 | 耗时 (ms) | 说明 |
+| --- | --- | --- | --- |
+| **embed_tokens** | Embedding | 0.82 | Token 嵌入查表 |
+| **rotary_emb** | RotaryEmbedding | ~0 | 位置编码（懒加载） |
+
+### 4.4 汇总统计
+
+**每层 (Decoder Layer) 汇总**：
+
+| 指标 | 数值 |
+| --- | --- |
+| **Total Time per Layer** | 43.17 ms |
+| **Total OPs per Layer** | 416,981,760 (约 417M) |
+| **Linear 层耗时** | 42.27 ms (97.92%) |
+| **Non-Linear 层耗时** | 0.90 ms (2.08%) |
+
+### 4.5 深度分析
+
+#### 4.5.1 算力瓶颈分析 (Compute Bound)
 
 **核心发现**：MLP 三算子（gate_proj、up_proj、down_proj）成为计算瓶颈。
 
@@ -254,13 +330,13 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 
 1. **运算量占比**
    - MLP 三算子合计：106.17M × 3 = **318.51M OPs**
-   - 总运算量（所有算子）：约 **416.81M OPs**
+   - 总运算量（所有算子）：约 **416.98M OPs**
    - MLP 占比：**76.4%**
 
 2. **耗时占比**
-   - MLP 三算子合计：14.06 + 13.49 + 13.13 = **40.68 ms**
-   - 单层总耗时：50.32 ms
-   - 耗时占比：**80.8%**
+   - MLP 三算子合计：11.92 + 11.48 + 11.23 = **34.63 ms**
+   - 单层总耗时：43.17 ms
+   - 耗时占比：**80.2%**
 
 运算量与耗时具有一致性，表明模型处在 **Compute Bound** 状态，即计算量主导性能。
 
@@ -268,16 +344,17 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 
 | 算子类型 | 单次运算量 | 平均耗时 | 运算效率 (GOPS) |
 | --- | --- | --- | --- |
-| gate_proj | 106.17M | 14.06 ms | **7.55 GOPS** |
-| up_proj | 106.17M | 13.49 ms | **7.87 GOPS** |
-| down_proj | 106.17M | 13.13 ms | **8.09 GOPS** |
-| q_proj | 39.32M | 4.40 ms | 8.94 GOPS |
-| o_proj | 39.32M | 3.67 ms | 10.72 GOPS |
+| gate_proj | 106.17M | 11.92 ms | **8.91 GOPS** |
+| up_proj | 106.17M | 11.48 ms | **9.25 GOPS** |
+| down_proj | 106.17M | 11.23 ms | **9.45 GOPS** |
+| q_proj | 39.32M | 3.54 ms | 11.11 GOPS |
+| o_proj | 39.32M | 2.89 ms | 13.58 GOPS |
 
-- MLP 算子运算效率（7.55-8.09 GOPS）略低于 Attention 算子（8.94-13.76 GOPS），这可能是因为 MLP 的矩阵更大，Cache 命中率降低。
-- 但整体算力（7-14 GOPS）远低于 CPU 理论峰值，**算力利用率较低**，存在巨大优化空间，FPGA 加速潜力巨大。
+- MLP 算子运算效率（8.91-9.45 GOPS）略低于 Attention 算子（11.11-19.55 GOPS），这可能是因为 MLP 的矩阵更大，Cache 命中率降低。
+- Non-Linear 层（RMSNorm、ReLU²）的有效算力仅为 **0.1-0.3 GOPS**，远低于 Linear 层，因为这些操作涉及复杂运算（开方、除法）且数据依赖性强。
+- 但整体算力（8-20 GOPS）远低于 CPU 理论峰值，**算力利用率较低**，存在巨大优化空间，FPGA 加速潜力巨大。
 
-#### 4.2.2 内存墙效应分析 (Memory Wall)
+#### 4.5.2 内存墙效应分析 (Memory Wall)
 
 **核心问题**：为何 CPU 算力利用率较低？
 
@@ -287,7 +364,9 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
    - CPU 理论峰值（FP32 单精度）：
      - AMD Ryzen 7 9700X：8核 × 高主频 + AVX512 支持
      - 理论峰值可达数百 GFLOPS
-   - 实测有效算力：**7.55-13.76 GOPS**
+   - 实测有效算力：
+     - Linear 层：**8.91-19.55 GOPS**
+     - Non-Linear 层：**0.11-0.30 GOPS**
    - 利用率：**约 2-5%**
 
 2. **内存带宽瓶颈计算**
@@ -321,7 +400,7 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
      - 计算：`real_weight = quantized_weight * scale`
    - 额外的计算和内存访问抵消了部分带宽优势
 
-#### 4.2.3 算子异常现象分析
+#### 4.5.3 算子异常现象分析
 
 **异常 1：Layer 0 的 q_proj 耗时 3001 ms**
 
@@ -351,40 +430,63 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 | --- | --- | --- |
 | 模型加载内存 | ~9.4 GB | 2B 参数 FP32 格式 |
 | 单次推理耗时 | ~4.8 秒 | 30 层全部执行 |
-| 每层平均耗时 | ~50 ms | 稳定运行阶段 |
-| MLP 耗时占比 | **80.8%** | 性能瓶颈 |
-| 有效算力 | 7-14 GOPS | CPU 利用率极低 |
+| 每层平均耗时 | ~43.17 ms | 稳定运行阶段 |
+| **Linear 层耗时占比** | **97.92%** | 绝对主导 |
+| **Non-Linear 层耗时占比** | **2.08%** | 可忽略 |
+| MLP 耗时占比 | **80.22%** | 性能瓶颈 |
+| Attention 耗时占比 | 17.70% | 次要 |
+| Normalization 耗时占比 | 1.77% | 微小 |
+| Activation 耗时占比 | 0.32% | 极微 |
+| 有效算力 (Linear) | 8-20 GOPS | CPU 利用率极低 |
+| 有效算力 (Non-Linear) | 0.1-0.3 GOPS | 复杂运算开销 |
 
-### 5.2 FPGA 加速潜力分析
+### 5.2 层类型性能特征对比
+
+| 层类型 | 代表算子 | 耗时占比 | 运算特点 | FPGA 加速优先级 |
+| --- | --- | --- | --- | --- |
+| **MLP Linear** | gate/up/down_proj | 80.22% | 大规模矩阵乘 | ⭐⭐⭐ 最高 |
+| **Attn Linear** | q/k/v/o_proj | 17.70% | 中等矩阵乘 | ⭐⭐ 高 |
+| **Normalization** | RMSNorm | 1.77% | 向量运算 | ⭐ 低 |
+| **Activation** | ReLU² | 0.32% | 元素级运算 | ⭐ 低 |
+
+### 5.3 FPGA 加速潜力分析
 
 本报告证实了将 BitNet 模型的 **BitLinear 算子** 迁移至 FPGA 进行加速具有极高的可行性和必要性：
 
 1. **MLP Block 加速优先级最高**
-   - 占据 80.8% 的计算时间
+   - 占据 80.22% 的计算时间
    - 三算子（gate_proj、up_proj、down_proj）结构相似，可复用加速器设计
    - FPGA 可实现专用三值矩阵乘法单元，避免通用 CPU 的解量化开销
 
-2. **内存墙突破可能**
+2. **Non-Linear 层可在 CPU/RISC-V 软核处理**
+   - 仅占 2.08% 的时间开销
+   - RMSNorm、激活函数等可由软核灵活处理
+   - 避免 FPGA 资源浪费在低效率运算上
+
+3. **内存墙突破可能**
    - FPGA 片上 BRAM/URAM 可缓存权重矩阵
    - 消除 Cache Miss，实现确定性延迟
    - 流式处理架构最大化带宽利用率
 
-3. **量化友好特性**
+4. **量化友好特性**
    - 1.58-bit 权重 (+1, 0, -1) 可用简单加减法实现
    - 无需乘法器，大幅降低资源消耗
    - 适合 FPGA 的查找表（LUT）实现
 
-### 5.3 下一步工作
+### 5.4 下一步工作
 
 1. 设计 BitLinear 算子的 SystemVerilog RTL 实现
 2. 在 Zynq FPGA 平台上验证单算子性能
 3. 构建完整的加速器流水线
 4. 与 RISC-V 软核协同工作，实现灵活的推理控制
+5. Non-Linear 层（RMSNorm、激活函数）由 RISC-V 软核处理
 
 ---
 
 **附录**：完整数据文件
 
 - [raw_layer_data.csv](raw_layer_data.csv) - 所有层的原始性能数据
-- [final_operator_benchmark.csv](final_operator_benchmark.csv) - 算子级统计汇总
+- [final_operator_benchmark.csv](final_operator_benchmark.csv) - 全部算子统计汇总
+- [linear_operator_stats.csv](linear_operator_stats.csv) - Linear 层统计
+- [nonlinear_operator_stats.csv](nonlinear_operator_stats.csv) - Non-Linear 层统计
 - [inference_profile_report.json](inference_profile_report.json) - JSON 格式完整报告数据

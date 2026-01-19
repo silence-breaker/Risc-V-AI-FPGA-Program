@@ -818,8 +818,8 @@ class InferenceProfiler:
                 # 算力占比
                 ops_pct = (ops_per_call / total_ops_all * stats["call_count"] * 100) if total_ops_all > 0 else 0
                 
-                # 有效算力 (GOPS) = OPs / time_ms / 1000
-                gops = (ops_per_call / avg_time / 1000) if avg_time > 0 and ops_per_call > 0 else 0
+                # 有效算力 (GOPS) = OPs / time_ms / 1e6 (因为 OPs 是整数，time 是 ms)
+                gops = (ops_per_call / avg_time / 1e6) if avg_time > 0 and ops_per_call > 0 else 0
                 
                 # 内存增量
                 mem_str = f"{stats['mem_peak']:.2f}" if stats['mem_peak'] > 0.01 else "~0"
@@ -866,14 +866,14 @@ class InferenceProfiler:
             for op_type, stats in sorted_ops[:7]:  # Top 7 算子
                 avg_time = stats["total_time_ms"] / stats["call_count"] if stats["call_count"] > 0 else 0
                 ops_per_call = stats["profiles"][0].ops_per_call if stats["profiles"] else 0
-                gops = (ops_per_call / avg_time / 1000) if avg_time > 0 and ops_per_call > 0 else 0
+                gops = (ops_per_call / avg_time / 1e6) if avg_time > 0 and ops_per_call > 0 else 0
                 md_lines.append(f"| {op_type} | {ops_per_call / 1e6:.2f}M | {avg_time:.2f}ms | **{gops:.2f} GOPS** |")
             
             md_lines.append("")
             md_lines.append("---\n")
             
             # 完整层列表 (折叠)
-            md_lines.append("### 3.3 完整 Linear 层列表\n")
+            md_lines.append("### 附录：完整 Linear 层列表\n")
             md_lines.append("<details>")
             md_lines.append("<summary>点击展开完整列表 (共 {} 层)</summary>\n".format(len(layer_profiles)))
             md_lines.append("| 层名称 | 调用次数 | 总耗时 (ms) | 占比 (%) | 输入形状 | 输出形状 | 参数量 |")
@@ -889,10 +889,10 @@ class InferenceProfiler:
         
         # Token 生成详情
         if self.token_profiles:
-            md_lines.append("## 4. Token 生成详情\n")
+            md_lines.append("## 6. Token 生成详情\n")
             
             decode_times = [t.time_ms for t in self.token_profiles]
-            md_lines.append("### 4.1 统计信息\n")
+            md_lines.append("### 6.1 统计信息\n")
             md_lines.append(f"- **生成 Token 数**: {len(self.token_profiles)}")
             md_lines.append(f"- **最小耗时**: {min(decode_times):.2f} ms")
             md_lines.append(f"- **最大耗时**: {max(decode_times):.2f} ms")
@@ -902,7 +902,7 @@ class InferenceProfiler:
             md_lines.append("")
             
             # Token 列表 (折叠)
-            md_lines.append("### 4.2 Token 生成列表\n")
+            md_lines.append("### 6.2 Token 生成列表\n")
             md_lines.append("<details>")
             md_lines.append("<summary>点击展开完整列表 (共 {} 个 Token)</summary>\n".format(len(self.token_profiles)))
             md_lines.append("| 序号 | Token ID | Token 文本 | 耗时 (ms) | 归一化耗时 (ms) | 内存 (MB) |")
@@ -918,7 +918,7 @@ class InferenceProfiler:
             md_lines.append("")
         
         # 内存时间线
-        md_lines.append("## 5. 内存占用时间线\n")
+        md_lines.append("## 7. 内存占用时间线\n")
         md_lines.append("| 时间点 (s) | 进程 RSS (MB) | 虚拟内存 (MB) | 系统已用 (MB) | 系统总量 (MB) |")
         md_lines.append("|------------|---------------|---------------|---------------|---------------|")
         
@@ -927,7 +927,7 @@ class InferenceProfiler:
         md_lines.append("")
         
         # FPGA 加速建议
-        md_lines.append("## 6. FPGA 加速建议\n")
+        md_lines.append("## 8. FPGA 加速建议\n")
         
         if layer_profiles:
             top5_layers = layer_profiles[:5]

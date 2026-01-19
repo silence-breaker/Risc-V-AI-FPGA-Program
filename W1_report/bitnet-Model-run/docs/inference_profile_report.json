@@ -1,114 +1,262 @@
 {
   "meta": {
-    "model_name": "../models",
-    "timestamp": "2026-01-18T18:25:40.310257",
-    "reference_freq_mhz": 3000.0
+    "report_title": "BitNet b1.58 模型 CPU 推理性能分析报告",
+    "date": "2026年01月19日",
+    "framework": "PyTorch (CPU only)",
+    "model_path": "/home/silence_breaker/git/Risc-V-AI-FPGA-Program/W1_report/bitnet-Model-run/models/microsoftbitnet-b1.58-2B-4T-bf16",
+    "prompt": "Microsoft is",
+    "seq_len": 3
   },
-  "cpu_info": {
-    "brand": "12th Gen Intel(R) Core(TM) i9-12900H",
-    "arch": "X86_64",
-    "cores_physical": 10,
-    "cores_logical": 20,
-    "freq_base_mhz": 2918.3819999999996,
-    "freq_current_mhz": 2918.3819999999996
+  "system_info": {
+    "date": "2026年01月19日",
+    "platform": "Linux",
+    "processor": "x86_64",
+    "cpu_count": 16,
+    "cpu_count_physical": 8,
+    "memory_total_gb": 30.19,
+    "python_version": "3.10.19",
+    "torch_version": "2.5.1+cu121"
   },
-  "freq_normalization": {
-    "actual_freq_mhz": 2918.3819999999996,
-    "reference_freq_mhz": 3000.0,
-    "scale_factor": 0.9727939999999998,
-    "explanation": "归一化时间 = 实测时间 × (实际频率 / 参考频率)"
+  "model_info": {
+    "structure": "BitNetForCausalLM(\n  (model): BitNetModel(\n    (embed_tokens): Embedding(128256, 2560)\n    (layers): ModuleList(\n      (0-29): 30 x BitNetDecoderLayer(\n        (self_attn): BitNetAttention(\n          (q_proj): AutoBitLinear(in_features=2560, out_features=2560, bias=False)\n          (k_proj): AutoBitLinear(in_features=2560, out_features=640, bias=False)\n          (v_proj): AutoBitLinear(in_features=2560, out_features=640, bias=False)\n          (o_proj): AutoBitLinear(in_features=2560, out_features=2560, bias=False)\n          (attn_sub_norm): BitNetRMSNorm((2560,), eps=1e-05)\n        )\n        (mlp): BitNetMLP(\n          (gate_proj): AutoBitLinear(in_features=2560, out_features=6912, bias=False)\n          (up_proj): AutoBitLinear(in_features=2560, out_features=6912, bias=False)\n          (down_proj): AutoBitLinear(in_features=6912, out_features=2560, bias=False)\n          (act_fn): ReLUSquaredActivation()\n          (ffn_sub_norm): BitNetRMSNorm((6912,), eps=1e-05)\n        )\n        (input_layernorm): BitNetRMSNorm((2560,), eps=1e-05)\n        (post_attention_layernorm): BitNetRMSNorm((2560,), eps=1e-05)\n      )\n    )\n    (norm): BitNetRMSNorm((2560,), eps=1e-05)\n    (rotary_emb): BitNetRotaryEmbedding()\n  )\n  (lm_head): Linear(in_features=2560, out_features=128256, bias=False)\n)",
+    "num_layers": 30,
+    "memory_loaded_mb": 9397.37
   },
-  "stage_profiles": [
+  "inference_summary": {
+    "total_time_ms": 4808.34,
+    "total_ops_per_layer": 416808960,
+    "avg_time_per_layer_ms": 50.32
+  },
+  "layer_distribution": {
+    "mlp_time_ms": 40.68,
+    "mlp_time_ratio": 80.8,
+    "attn_time_ms": 9.65,
+    "attn_time_ratio": 19.2,
+    "nonlinear_time_ms": 0,
+    "nonlinear_time_ratio": 0.0
+  },
+  "operator_stats": [
     {
-      "name": "Tokenizer 加载",
-      "duration_ms": 268.45594600308686,
-      "duration_normalized_ms": 261.15233353612683,
-      "memory_before_mb": 530.796875,
-      "memory_after_mb": 603.3125,
-      "memory_delta_mb": 72.515625
+      "Submodule": "down_proj",
+      "Time (ms)": 13.128124827274185,
+      "OPs": 106168320.0,
+      "Mem Delta (MB)": 0.06734913793103449,
+      "Effective GOPS": 8.087089466077533,
+      "Time Ratio (%)": 26.087019953862654,
+      "OPs Ratio (%)": 25.471698113207548
     },
     {
-      "name": "Model 加载",
-      "duration_ms": 25753.50405400968,
-      "duration_normalized_ms": 25052.85422271629,
-      "memory_before_mb": 603.3125,
-      "memory_after_mb": 6096.20703125,
-      "memory_delta_mb": 5492.89453125
+      "Submodule": "gate_proj",
+      "Time (ms)": 14.056134413639766,
+      "OPs": 106168320.0,
+      "Mem Delta (MB)": 0.09078663793103449,
+      "Effective GOPS": 7.553166245833319,
+      "Time Ratio (%)": 27.931076505381697,
+      "OPs Ratio (%)": 25.471698113207548
     },
     {
-      "name": "Tokenization (编码)",
-      "duration_ms": 73.26593299512751,
-      "duration_normalized_ms": 71.27266002206206,
-      "memory_before_mb": 6097.3828125,
-      "memory_after_mb": 6102.81640625,
-      "memory_delta_mb": 5.43359375
+      "Submodule": "up_proj",
+      "Time (ms)": 13.494580690192002,
+      "OPs": 106168320.0,
+      "Mem Delta (MB)": 0.07152478448275862,
+      "Effective GOPS": 7.8674782445937135,
+      "Time Ratio (%)": 26.81520783552313,
+      "OPs Ratio (%)": 25.471698113207548
     },
     {
-      "name": "Prefill (首次前向)",
-      "duration_ms": 122360.68822699599,
-      "duration_normalized_ms": 119031.74334309231,
-      "memory_before_mb": 6102.81640625,
-      "memory_after_mb": 6528.2734375,
-      "memory_delta_mb": 425.45703125
+      "Submodule": "o_proj",
+      "Time (ms)": 3.667827723708389,
+      "OPs": 39321600.0,
+      "Mem Delta (MB)": 0.0,
+      "Effective GOPS": 10.720678003994024,
+      "Time Ratio (%)": 7.288374865001809,
+      "OPs Ratio (%)": 9.433962264150944
     },
     {
-      "name": "Decode (逐token生成)",
-      "duration_ms": 3118485.0288940067,
-      "duration_normalized_ms": 3033643.5251979157,
-      "memory_before_mb": 6530.45703125,
-      "memory_after_mb": 4859.8984375,
-      "memory_delta_mb": -1670.55859375
+      "Submodule": "q_proj",
+      "Time (ms)": 4.398858000309576,
+      "OPs": 39321600.0,
+      "Mem Delta (MB)": 0.0,
+      "Effective GOPS": 8.939047361208905,
+      "Time Ratio (%)": 8.741011982905611,
+      "OPs Ratio (%)": 9.433962264150944
     },
     {
-      "name": "Detokenization (解码)",
-      "duration_ms": 7.125791002181359,
-      "duration_normalized_ms": 6.931926732176011,
-      "memory_before_mb": 4798.7109375,
-      "memory_after_mb": 4799.15234375,
-      "memory_delta_mb": 0.44140625
+      "Submodule": "k_proj",
+      "Time (ms)": 0.8644723447073845,
+      "OPs": 9830400.0,
+      "Mem Delta (MB)": 0.0,
+      "Effective GOPS": 11.371560999244567,
+      "Time Ratio (%)": 1.7178011027966729,
+      "OPs Ratio (%)": 2.358490566037736
+    },
+    {
+      "Submodule": "v_proj",
+      "Time (ms)": 0.7143581377900334,
+      "OPs": 9830400.0,
+      "Mem Delta (MB)": 0.0,
+      "Effective GOPS": 13.761164715518905,
+      "Time Ratio (%)": 1.4195077545284194,
+      "OPs Ratio (%)": 2.358490566037736
     }
   ],
-  "summary": {
-    "total_time_ms": 3266948.0688450127,
-    "total_time_normalized_ms": 3178067.4796840143,
-    "peak_memory_mb": 6528.2734375,
-    "stages_breakdown": {
-      "Tokenizer 加载": {
-        "time_ms": 268.45594600308686,
-        "time_percent": 0.008217331293484441,
-        "time_normalized_ms": 261.15233353612683,
-        "memory_delta_mb": 72.515625
-      },
-      "Model 加载": {
-        "time_ms": 25753.50405400968,
-        "time_percent": 0.7883046657400496,
-        "time_normalized_ms": 25052.85422271629,
-        "memory_delta_mb": 5492.89453125
-      },
-      "Tokenization (编码)": {
-        "time_ms": 73.26593299512751,
-        "time_percent": 0.0022426414944829456,
-        "time_normalized_ms": 71.27266002206206,
-        "memory_delta_mb": 5.43359375
-      },
-      "Prefill (首次前向)": {
-        "time_ms": 122360.68822699599,
-        "time_percent": 3.7454127108379485,
-        "time_normalized_ms": 119031.74334309231,
-        "memory_delta_mb": 425.45703125
-      },
-      "Decode (逐token生成)": {
-        "time_ms": 3118485.0288940067,
-        "time_percent": 95.45560453296422,
-        "time_normalized_ms": 3033643.5251979157,
-        "memory_delta_mb": -1670.55859375
-      },
-      "Detokenization (解码)": {
-        "time_ms": 7.125791002181359,
-        "time_percent": 0.0002181176698257279,
-        "time_normalized_ms": 6.931926732176011,
-        "memory_delta_mb": 0.44140625
-      }
+  "layer0_data": [
+    {
+      "Layer Name": "model.layers.0.self_attn.q_proj",
+      "Layer Num": 0,
+      "Submodule": "q_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 3001.7167270016216,
+      "OPs": 39321600,
+      "Mem Delta (MB)": 138.125,
+      "Abs Mem (MB)": 10053.4453125,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.0.self_attn.k_proj",
+      "Layer Num": 0,
+      "Submodule": "k_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 26.633272998878965,
+      "OPs": 9830400,
+      "Mem Delta (MB)": 0.125,
+      "Abs Mem (MB)": 10053.5703125,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.0.self_attn.v_proj",
+      "Layer Num": 0,
+      "Submodule": "v_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 0.5461119981191587,
+      "OPs": 9830400,
+      "Mem Delta (MB)": 0.0,
+      "Abs Mem (MB)": 10053.5703125,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.0.self_attn.o_proj",
+      "Layer Num": 0,
+      "Submodule": "o_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 2.6034809998236597,
+      "OPs": 39321600,
+      "Mem Delta (MB)": 6.25,
+      "Abs Mem (MB)": 10061.3203125,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.0.mlp.gate_proj",
+      "Layer Num": 0,
+      "Submodule": "gate_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 38.3481649987516,
+      "OPs": 106168320,
+      "Mem Delta (MB)": 0.00390625,
+      "Abs Mem (MB)": 10061.32421875,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.0.mlp.up_proj",
+      "Layer Num": 0,
+      "Submodule": "up_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 10.453950002556667,
+      "OPs": 106168320,
+      "Mem Delta (MB)": 0.30859375,
+      "Abs Mem (MB)": 10061.6328125,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.0.mlp.down_proj",
+      "Layer Num": 0,
+      "Submodule": "down_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 102.96959300103481,
+      "OPs": 106168320,
+      "Mem Delta (MB)": 1.4453125,
+      "Abs Mem (MB)": 10063.078125,
+      "Input Shape": "[1, 3, 6912]"
     }
-  }
+  ],
+  "mid_layer_data": [
+    {
+      "Layer Name": "model.layers.14.self_attn.q_proj",
+      "Layer Num": 14,
+      "Submodule": "q_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 3.517369001201587,
+      "OPs": 39321600,
+      "Mem Delta (MB)": 0.0,
+      "Abs Mem (MB)": 10063.26171875,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.14.self_attn.k_proj",
+      "Layer Num": 14,
+      "Submodule": "k_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 0.4930689974571578,
+      "OPs": 9830400,
+      "Mem Delta (MB)": 0.0,
+      "Abs Mem (MB)": 10063.26171875,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.14.self_attn.v_proj",
+      "Layer Num": 14,
+      "Submodule": "v_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 0.40747599996393546,
+      "OPs": 9830400,
+      "Mem Delta (MB)": 0.0,
+      "Abs Mem (MB)": 10063.26171875,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.14.self_attn.o_proj",
+      "Layer Num": 14,
+      "Submodule": "o_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 2.4372119987674523,
+      "OPs": 39321600,
+      "Mem Delta (MB)": 0.0,
+      "Abs Mem (MB)": 10063.26171875,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.14.mlp.gate_proj",
+      "Layer Num": 14,
+      "Submodule": "gate_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 10.60718099688529,
+      "OPs": 106168320,
+      "Mem Delta (MB)": 0.0,
+      "Abs Mem (MB)": 10063.203125,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.14.mlp.up_proj",
+      "Layer Num": 14,
+      "Submodule": "up_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 10.852528001123574,
+      "OPs": 106168320,
+      "Mem Delta (MB)": 0.05859375,
+      "Abs Mem (MB)": 10063.26171875,
+      "Input Shape": "[1, 3, 2560]"
+    },
+    {
+      "Layer Name": "model.layers.14.mlp.down_proj",
+      "Layer Num": 14,
+      "Submodule": "down_proj",
+      "Type": "AutoBitLinear",
+      "Time (ms)": 10.513723002077313,
+      "OPs": 106168320,
+      "Mem Delta (MB)": 0.0,
+      "Abs Mem (MB)": 10063.1953125,
+      "Input Shape": "[1, 3, 6912]"
+    }
+  ],
+  "raw_data_file": "raw_layer_data.csv"
 }

@@ -74,7 +74,7 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
    - **核心算子**：`AutoBitLinear` - 使用 1.58-bit 量化权重的线性变换
 
 2. **注意力计算**
-   - 计算注意力得分：$\text{Attention}(Q, K, V) = \text{Softmax}(\frac{QK^T}{\sqrt{d_k}})V$ （拆成4头，每头640维）
+   - 计算注意力得分：$\text{Attention}(Q, K, V) = \text{Softmax}(\frac{QK^T}{\sqrt{d_k}})V$
    - 多头注意力合并（Multi-Head Attention）
 
 3. **输出投影** (`o_proj`)

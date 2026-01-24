@@ -200,6 +200,7 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 | `ffn_sub_norm` | FFN 中间 | [1, 3, 6912] | 0.22 | 0.50% |
 
 **RMSNorm 运算量分析**：
+
 - 计算公式：$\text{RMSNorm}(x) = \frac{x}{\sqrt{\frac{1}{n}\sum_{i=1}^{n}x_i^2 + \epsilon}} \cdot \gamma$
 - 运算复杂度：$O(3 \times B \times S \times H)$（平方、求和、除法）
 - `input_layernorm` 运算量：$3 \times 1 \times 3 \times 2560 = 23,040$ OPs
@@ -221,6 +222,7 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 | `act_fn` | ReLUSquaredActivation | [1, 3, 6912] | 0.14 | 0.32% |
 
 **ReLU² 运算量分析**：
+
 - 计算公式：$\text{ReLU}^2(x) = (\max(0, x))^2$
 - 运算复杂度：$O(2 \times B \times S \times H)$（比较 + 平方）
 - 运算量：$2 \times 1 \times 3 \times 6912 = 41,472$ OPs
@@ -478,8 +480,6 @@ BitNet b1.58 的单次推理（Forward Pass）主要包含以下步骤：
 1. 设计 BitLinear 算子的 SystemVerilog RTL 实现
 2. 在 Zynq FPGA 平台上验证单算子性能
 3. 构建完整的加速器流水线
-4. 与 RISC-V 软核协同工作，实现灵活的推理控制
-5. Non-Linear 层（RMSNorm、激活函数）由 RISC-V 软核处理
 
 ---
 

@@ -22,6 +22,7 @@ class alignas(VL_CACHE_LINE_BYTES) Vvec_multi_core___024root final {
     VL_IN(i_weight,31,0);
     VL_OUT8(o_data_ready,0,0);
     IData/*31:0*/ vec_multi_core__DOT__weight_reg;
+    CData/*0:0*/ vec_multi_core__DOT__product_ready;
     CData/*0:0*/ vec_multi_core__DOT__o_valid_stage1;
     CData/*0:0*/ __Vtrigprevexpr___TOP__clk__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__rst_n__0;

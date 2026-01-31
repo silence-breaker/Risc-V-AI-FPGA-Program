@@ -35,6 +35,7 @@ module vec_multi_core #(
   //1.PE计算层
   //中间信号：用于处理符号扩展
   logic signed [LEN-1:0][31:0] product;
+  logic product_ready;
   //计算每个激活值和权重点积的结果（并行生成）
   //根据权重值决定是加、减 还是 不变
   generate
@@ -42,6 +43,7 @@ module vec_multi_core #(
       always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
           product[i] <= 32'sd0;  // 每个元素独立复位
+          product_ready <= 1'b0;
         end else begin
           if (i_data_valid) begin
             unique case (weight_reg[i])
@@ -61,6 +63,7 @@ module vec_multi_core #(
             product[i] <= product[i];  // 保持原值（显式写，消除警告）
 
           end
+          product_ready <= i_data_valid;
         end
       end
     end
@@ -76,13 +79,16 @@ module vec_multi_core #(
       for (int k = 0; k < 4; k++) sum_temp[k] <= '0;
       o_valid_stage1 <= 1'b0;
     end else begin
+      if (product_ready) begin
 
-      sum_temp[0] <= (product[0] + product[1]) + (product[2] + product[3]);
-      sum_temp[1] <= (product[4] + product[5]) + (product[6] + product[7]);
-      sum_temp[2] <= (product[8] + product[9]) + (product[10] + product[11]);
-      sum_temp[3] <= (product[12] + product[13]) + (product[14] + product[15]);
+        sum_temp[0] <= (product[0] + product[1]) + (product[2] + product[3]);
+        sum_temp[1] <= (product[4] + product[5]) + (product[6] + product[7]);
+        sum_temp[2] <= (product[8] + product[9]) + (product[10] + product[11]);
+        sum_temp[3] <= (product[12] + product[13]) + (product[14] + product[15]);
 
-      o_valid_stage1 <= i_data_valid;
+
+      end
+      o_valid_stage1 <= product_ready;
     end
   end
 

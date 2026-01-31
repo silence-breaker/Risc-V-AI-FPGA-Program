@@ -48,18 +48,19 @@ void Vvec_multi_core___024root__trace_chg_0_sub_0(Vvec_multi_core___024root* vlS
                                             | (QData)((IData)(vlSelfRef.vec_multi_core__DOT__product__BRA__479__03a448__KET__))) 
                                            >> 0x00000020U));
         bufp->chgWData(oldp+1,(__Vtemp_14),512);
-        bufp->chgWData(oldp+17,(vlSelfRef.vec_multi_core__DOT__sum_temp),128);
-        bufp->chgBit(oldp+21,(vlSelfRef.vec_multi_core__DOT__o_valid_stage1));
-        bufp->chgIData(oldp+22,(vlSelfRef.vec_multi_core__DOT__unnamedblk1__DOT__k),32);
+        bufp->chgBit(oldp+17,(vlSelfRef.vec_multi_core__DOT__product_ready));
+        bufp->chgWData(oldp+18,(vlSelfRef.vec_multi_core__DOT__sum_temp),128);
+        bufp->chgBit(oldp+22,(vlSelfRef.vec_multi_core__DOT__o_valid_stage1));
+        bufp->chgIData(oldp+23,(vlSelfRef.vec_multi_core__DOT__unnamedblk1__DOT__k),32);
     }
-    bufp->chgBit(oldp+23,(vlSelfRef.clk));
-    bufp->chgBit(oldp+24,(vlSelfRef.rst_n));
-    bufp->chgBit(oldp+25,(vlSelfRef.i_data_valid));
-    bufp->chgBit(oldp+26,(vlSelfRef.i_load_weight));
-    bufp->chgWData(oldp+27,(vlSelfRef.i_data),128);
-    bufp->chgIData(oldp+31,(vlSelfRef.i_weight),32);
-    bufp->chgBit(oldp+32,(vlSelfRef.o_data_ready));
-    bufp->chgIData(oldp+33,(vlSelfRef.o_result),32);
+    bufp->chgBit(oldp+24,(vlSelfRef.clk));
+    bufp->chgBit(oldp+25,(vlSelfRef.rst_n));
+    bufp->chgBit(oldp+26,(vlSelfRef.i_data_valid));
+    bufp->chgBit(oldp+27,(vlSelfRef.i_load_weight));
+    bufp->chgWData(oldp+28,(vlSelfRef.i_data),128);
+    bufp->chgIData(oldp+32,(vlSelfRef.i_weight),32);
+    bufp->chgBit(oldp+33,(vlSelfRef.o_data_ready));
+    bufp->chgIData(oldp+34,(vlSelfRef.o_result),32);
 }
 
 void Vvec_multi_core___024root__trace_cleanup(void* voidSelf, VerilatedVcd* /*unused*/) {

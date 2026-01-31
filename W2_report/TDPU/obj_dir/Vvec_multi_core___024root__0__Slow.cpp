@@ -80,6 +80,7 @@ VL_ATTR_COLD void Vvec_multi_core___024root___ctor_var_reset(Vvec_multi_core___0
     vlSelf->vec_multi_core__DOT__product__BRA__95__03a64__KET__ = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 14500228222227139239ull);
     vlSelf->vec_multi_core__DOT__product__BRA__63__03a32__KET__ = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 7749640939295441036ull);
     vlSelf->vec_multi_core__DOT__product__BRA__31__03a0__KET__ = VL_SCOPED_RAND_RESET_I(32, __VscopeHash, 7424879779867248352ull);
+    vlSelf->vec_multi_core__DOT__product_ready = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 13123659374951433097ull);
     VL_SCOPED_RAND_RESET_W(128, vlSelf->vec_multi_core__DOT__sum_temp, __VscopeHash, 9359280744562740124ull);
     vlSelf->vec_multi_core__DOT__o_valid_stage1 = VL_SCOPED_RAND_RESET_I(1, __VscopeHash, 9257836852897556361ull);
     vlSelf->vec_multi_core__DOT__unnamedblk1__DOT__k = 0;

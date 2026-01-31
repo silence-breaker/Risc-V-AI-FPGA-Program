@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 package package_def;
   typedef enum logic [1:0] {
     W_ZERO = 2'b01,

@@ -24,9 +24,8 @@ void Vvec_multi_core___024root__trace_chg_0_sub_0(Vvec_multi_core___024root* vlS
     VlWide<16>/*511:0*/ __Vtemp_14;
     // Body
     uint32_t* const oldp VL_ATTR_UNUSED = bufp->oldp(vlSymsp->__Vm_baseCode + 1);
-    if (VL_UNLIKELY(((vlSelfRef.__Vm_traceActivity[1U] 
-                      | vlSelfRef.__Vm_traceActivity
-                      [2U])))) {
+    if (VL_UNLIKELY((vlSelfRef.__Vm_traceActivity[1U]))) {
+        bufp->chgIData(oldp+0,(vlSelfRef.vec_multi_core__DOT__weight_reg),32);
         __Vtemp_14[0U] = vlSelfRef.vec_multi_core__DOT__product__BRA__31__03a0__KET__;
         __Vtemp_14[1U] = vlSelfRef.vec_multi_core__DOT__product__BRA__63__03a32__KET__;
         __Vtemp_14[2U] = vlSelfRef.vec_multi_core__DOT__product__BRA__95__03a64__KET__;
@@ -48,10 +47,7 @@ void Vvec_multi_core___024root__trace_chg_0_sub_0(Vvec_multi_core___024root* vlS
                                              << 0x00000020U) 
                                             | (QData)((IData)(vlSelfRef.vec_multi_core__DOT__product__BRA__479__03a448__KET__))) 
                                            >> 0x00000020U));
-        bufp->chgWData(oldp+0,(__Vtemp_14),512);
-    }
-    if (VL_UNLIKELY((vlSelfRef.__Vm_traceActivity[2U]))) {
-        bufp->chgIData(oldp+16,(vlSelfRef.vec_multi_core__DOT__weight_reg),32);
+        bufp->chgWData(oldp+1,(__Vtemp_14),512);
         bufp->chgWData(oldp+17,(vlSelfRef.vec_multi_core__DOT__sum_temp),128);
         bufp->chgBit(oldp+21,(vlSelfRef.vec_multi_core__DOT__o_valid_stage1));
         bufp->chgIData(oldp+22,(vlSelfRef.vec_multi_core__DOT__unnamedblk1__DOT__k),32);
@@ -74,5 +70,4 @@ void Vvec_multi_core___024root__trace_cleanup(void* voidSelf, VerilatedVcd* /*un
     vlSymsp->__Vm_activity = false;
     vlSymsp->TOP.__Vm_traceActivity[0U] = 0U;
     vlSymsp->TOP.__Vm_traceActivity[1U] = 0U;
-    vlSymsp->TOP.__Vm_traceActivity[2U] = 0U;
 }

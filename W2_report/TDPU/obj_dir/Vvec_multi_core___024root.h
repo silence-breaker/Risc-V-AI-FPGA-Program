@@ -23,8 +23,6 @@ class alignas(VL_CACHE_LINE_BYTES) Vvec_multi_core___024root final {
     VL_OUT8(o_data_ready,0,0);
     IData/*31:0*/ vec_multi_core__DOT__weight_reg;
     CData/*0:0*/ vec_multi_core__DOT__o_valid_stage1;
-    CData/*0:0*/ __VstlFirstIteration;
-    CData/*0:0*/ __VicoFirstIteration;
     CData/*0:0*/ __Vtrigprevexpr___TOP__clk__0;
     CData/*0:0*/ __Vtrigprevexpr___TOP__rst_n__0;
     VL_OUT(o_result,31,0);
@@ -47,11 +45,9 @@ class alignas(VL_CACHE_LINE_BYTES) Vvec_multi_core___024root final {
     VlWide<4>/*127:0*/ vec_multi_core__DOT__sum_temp;
     IData/*31:0*/ vec_multi_core__DOT__unnamedblk1__DOT__k;
     IData/*31:0*/ __VactIterCount;
-    VlUnpacked<QData/*63:0*/, 1> __VstlTriggered;
-    VlUnpacked<QData/*63:0*/, 1> __VicoTriggered;
     VlUnpacked<QData/*63:0*/, 1> __VactTriggered;
     VlUnpacked<QData/*63:0*/, 1> __VnbaTriggered;
-    VlUnpacked<CData/*0:0*/, 3> __Vm_traceActivity;
+    VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
 
     // INTERNAL VARIABLES
     Vvec_multi_core__Syms* vlSymsp;

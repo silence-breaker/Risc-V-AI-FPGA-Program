@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
-//`include "package_def.sv"  //引入包定义文件
-import package_def::*;
+`include "package_def.sv"  //引入包定义文件
+
 //在一个时间周期内并行计算默认参数为16对数据的TDPU核心
 //该核心先进行权重锁存，然后以脉动形式输出结果
 //logic [数量-1 : 0] [位宽-1 : 0] 变量名;
@@ -8,6 +8,7 @@ module vec_multi_core #(
     parameter int LEN = 16,  //并行度
     parameter int DATA_WIDTH = 8
 ) (
+
     input logic clk,
     input logic rst_n,  //异步复位
     input logic i_data_valid,  //输入数据有效信号（同步）
@@ -17,7 +18,7 @@ module vec_multi_core #(
     output logic o_data_ready,  //输出结果有效信号（同步）
     output logic signed [31:0] o_result  //输出累加结果，选择32位以防溢出
 );
-
+  import package_def::*;
   //0.权重寄存器(收到加载信号时锁存权重)
   weight_t [LEN-1:0] weight_reg;
   always_ff @(posedge clk or negedge rst_n) begin : core
@@ -35,27 +36,36 @@ module vec_multi_core #(
   //中间信号：用于处理符号扩展
   logic signed [LEN-1:0][31:0] product;
   //计算每个激活值和权重点积的结果（并行生成）
-  genvar i;
+  //根据权重值决定是加、减 还是 不变
   generate
-    for (i = 0; i < LEN; i++) begin : gen_PE
+    for (genvar i = 0; i < LEN; i++) begin : gen_PE  // genvar是生成循环专用变量
+      always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+          product[i] <= 32'sd0;  // 每个元素独立复位
+        end else begin
+          if (i_data_valid) begin
+            unique case (weight_reg[i])
+              W_POS: begin
+                product[i] <= 32'(i_data[i]);  // 符号扩展到32位
+              end
+              W_NEG: begin
+                product[i] <= -32'(i_data[i]);  // 符号扩展并取负
+              end
+              W_ZERO: begin
+                product[i] <= 32'sd0;
+              end
+              default: product[i] <= 32'sd0;
+            endcase
+          end else begin
+            // 补充i_data_valid为低时的赋值，避免锁存器
+            product[i] <= product[i];  // 保持原值（显式写，消除警告）
 
-      //根据权重值决定是加、减 还是 不变
-      always_comb begin
-        unique case (weight_reg[i])
-          W_POS: begin
-            product[i] = 32'(i_data[i]);  //符号扩展到32位
           end
-          W_NEG: begin
-            product[i] = -32'(i_data[i]);  //符号扩展到32位并取负
-          end
-          W_ZERO: begin
-            product[i] = 32'sd0;  //权重为0，结果为0
-          end
-          default: product[i] = 32'sd0;  // 安全保底
-        endcase
+        end
       end
     end
   endgenerate
+
 
   //2.加法树 Part1
   logic signed [3:0][31:0] sum_temp;  //中间和

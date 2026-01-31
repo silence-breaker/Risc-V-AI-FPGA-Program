@@ -5,257 +5,6 @@
 #include "Vvec_multi_core__pch.h"
 
 #ifdef VL_DEBUG
-VL_ATTR_COLD void Vvec_multi_core___024root___dump_triggers__ico(const VlUnpacked<QData/*63:0*/, 1> &triggers, const std::string &tag);
-#endif  // VL_DEBUG
-
-void Vvec_multi_core___024root___eval_triggers__ico(Vvec_multi_core___024root* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvec_multi_core___024root___eval_triggers__ico\n"); );
-    Vvec_multi_core__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-    // Body
-    vlSelfRef.__VicoTriggered[0U] = ((0xfffffffffffffffeULL 
-                                      & vlSelfRef.__VicoTriggered
-                                      [0U]) | (IData)((IData)(vlSelfRef.__VicoFirstIteration)));
-    vlSelfRef.__VicoFirstIteration = 0U;
-#ifdef VL_DEBUG
-    if (VL_UNLIKELY(vlSymsp->_vm_contextp__->debug())) {
-        Vvec_multi_core___024root___dump_triggers__ico(vlSelfRef.__VicoTriggered, "ico"s);
-    }
-#endif
-}
-
-bool Vvec_multi_core___024root___trigger_anySet__ico(const VlUnpacked<QData/*63:0*/, 1> &in) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvec_multi_core___024root___trigger_anySet__ico\n"); );
-    // Locals
-    IData/*31:0*/ n;
-    // Body
-    n = 0U;
-    do {
-        if (in[n]) {
-            return (1U);
-        }
-        n = ((IData)(1U) + n);
-    } while ((1U > n));
-    return (0U);
-}
-
-void Vvec_multi_core___024root___ico_sequent__TOP__0(Vvec_multi_core___024root* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvec_multi_core___024root___ico_sequent__TOP__0\n"); );
-    Vvec_multi_core__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-    // Body
-    vlSelfRef.vec_multi_core__DOT__product__BRA__31__03a0__KET__ 
-        = ((2U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg))
-            ? VL_EXTENDS_II(32,8, (0x000000ffU & vlSelfRef.i_data[0U]))
-            : ((0U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg))
-                ? (- VL_EXTENDS_II(32,8, (0x000000ffU 
-                                          & vlSelfRef.i_data[0U])))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__63__03a32__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 2U))) ? VL_EXTENDS_II(32,8, 
-                                                  (0x000000ffU 
-                                                   & (vlSelfRef.i_data[0U] 
-                                                      >> 8U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 2U))) ? (- VL_EXTENDS_II(32,8, 
-                                                         (0x000000ffU 
-                                                          & (vlSelfRef.i_data[0U] 
-                                                             >> 8U))))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__95__03a64__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 4U))) ? VL_EXTENDS_II(32,8, 
-                                                  (0x000000ffU 
-                                                   & (vlSelfRef.i_data[0U] 
-                                                      >> 0x00000010U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 4U))) ? (- VL_EXTENDS_II(32,8, 
-                                                         (0x000000ffU 
-                                                          & (vlSelfRef.i_data[0U] 
-                                                             >> 0x00000010U))))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__127__03a96__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 6U))) ? VL_EXTENDS_II(32,8, 
-                                                  (vlSelfRef.i_data[0U] 
-                                                   >> 0x00000018U))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 6U))) ? (- VL_EXTENDS_II(32,8, 
-                                                         (vlSelfRef.i_data[0U] 
-                                                          >> 0x00000018U)))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__159__03a128__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 8U))) ? VL_EXTENDS_II(32,8, 
-                                                  (0x000000ffU 
-                                                   & vlSelfRef.i_data[1U]))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 8U))) ? (- VL_EXTENDS_II(32,8, 
-                                                         (0x000000ffU 
-                                                          & vlSelfRef.i_data[1U])))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__191__03a160__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000000aU))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[1U] 
-                                                               >> 8U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000000aU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[1U] 
-                                                                    >> 8U))))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__223__03a192__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000000cU))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[1U] 
-                                                               >> 0x00000010U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000000cU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[1U] 
-                                                                    >> 0x00000010U))))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__255__03a224__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000000eU))) ? VL_EXTENDS_II(32,8, 
-                                                           (vlSelfRef.i_data[1U] 
-                                                            >> 0x00000018U))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000000eU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (vlSelfRef.i_data[1U] 
-                                                                 >> 0x00000018U)))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__287__03a256__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000010U))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & vlSelfRef.i_data[2U]))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000010U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & vlSelfRef.i_data[2U])))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__319__03a288__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000012U))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[2U] 
-                                                               >> 8U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000012U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[2U] 
-                                                                    >> 8U))))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__351__03a320__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000014U))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[2U] 
-                                                               >> 0x00000010U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000014U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[2U] 
-                                                                    >> 0x00000010U))))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__383__03a352__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000016U))) ? VL_EXTENDS_II(32,8, 
-                                                           (vlSelfRef.i_data[2U] 
-                                                            >> 0x00000018U))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000016U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (vlSelfRef.i_data[2U] 
-                                                                 >> 0x00000018U)))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__415__03a384__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000018U))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & vlSelfRef.i_data[3U]))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000018U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & vlSelfRef.i_data[3U])))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__447__03a416__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000001aU))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[3U] 
-                                                               >> 8U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000001aU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[3U] 
-                                                                    >> 8U))))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__479__03a448__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000001cU))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[3U] 
-                                                               >> 0x00000010U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000001cU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[3U] 
-                                                                    >> 0x00000010U))))
-                : 0U));
-    vlSelfRef.vec_multi_core__DOT__product__BRA__511__03a480__KET__ 
-        = ((2U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                   >> 0x0000001eU)) ? VL_EXTENDS_II(32,8, 
-                                                    (vlSelfRef.i_data[3U] 
-                                                     >> 0x00000018U))
-            : ((0U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                       >> 0x0000001eU)) ? (- VL_EXTENDS_II(32,8, 
-                                                           (vlSelfRef.i_data[3U] 
-                                                            >> 0x00000018U)))
-                : 0U));
-}
-
-void Vvec_multi_core___024root___eval_ico(Vvec_multi_core___024root* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvec_multi_core___024root___eval_ico\n"); );
-    Vvec_multi_core__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-    // Body
-    if ((1ULL & vlSelfRef.__VicoTriggered[0U])) {
-        Vvec_multi_core___024root___ico_sequent__TOP__0(vlSelf);
-        vlSelfRef.__Vm_traceActivity[1U] = 1U;
-    }
-}
-
-bool Vvec_multi_core___024root___eval_phase__ico(Vvec_multi_core___024root* vlSelf) {
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vvec_multi_core___024root___eval_phase__ico\n"); );
-    Vvec_multi_core__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    auto& vlSelfRef = std::ref(*vlSelf).get();
-    // Locals
-    CData/*0:0*/ __VicoExecute;
-    // Body
-    Vvec_multi_core___024root___eval_triggers__ico(vlSelf);
-    __VicoExecute = Vvec_multi_core___024root___trigger_anySet__ico(vlSelfRef.__VicoTriggered);
-    if (__VicoExecute) {
-        Vvec_multi_core___024root___eval_ico(vlSelf);
-    }
-    return (__VicoExecute);
-}
-
-#ifdef VL_DEBUG
 VL_ATTR_COLD void Vvec_multi_core___024root___dump_triggers__act(const VlUnpacked<QData/*63:0*/, 1> &triggers, const std::string &tag);
 #endif  // VL_DEBUG
 
@@ -298,12 +47,991 @@ void Vvec_multi_core___024root___nba_sequent__TOP__0(Vvec_multi_core___024root* 
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vvec_multi_core___024root___nba_sequent__TOP__0\n"); );
     Vvec_multi_core__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
+    // Locals
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__31__03a0__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__31__03a0__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__63__03a32__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__63__03a32__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__95__03a64__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__95__03a64__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__127__03a96__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__127__03a96__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__159__03a128__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__159__03a128__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__191__03a160__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__191__03a160__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__223__03a192__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__223__03a192__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__255__03a224__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__255__03a224__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__287__03a256__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__287__03a256__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__319__03a288__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__319__03a288__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__351__03a320__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__351__03a320__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__383__03a352__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__383__03a352__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__415__03a384__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__415__03a384__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__447__03a416__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__447__03a416__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__479__03a448__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__479__03a448__KET__ = 0;
+    IData/*31:0*/ __Vdly__vec_multi_core__DOT__product__BRA__511__03a480__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__511__03a480__KET__ = 0;
     // Body
+    __Vdly__vec_multi_core__DOT__product__BRA__31__03a0__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__31__03a0__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__63__03a32__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__63__03a32__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__95__03a64__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__95__03a64__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__127__03a96__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__127__03a96__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__159__03a128__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__159__03a128__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__191__03a160__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__191__03a160__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__223__03a192__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__223__03a192__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__255__03a224__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__255__03a224__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__287__03a256__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__287__03a256__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__319__03a288__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__319__03a288__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__351__03a320__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__351__03a320__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__383__03a352__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__383__03a352__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__415__03a384__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__415__03a384__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__447__03a416__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__447__03a416__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__479__03a448__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__479__03a448__KET__;
+    __Vdly__vec_multi_core__DOT__product__BRA__511__03a480__KET__ 
+        = vlSelfRef.vec_multi_core__DOT__product__BRA__511__03a480__KET__;
     if ((1U & (~ (IData)(vlSelfRef.rst_n)))) {
         vlSelfRef.vec_multi_core__DOT__unnamedblk1__DOT__k = 4U;
     }
-    vlSelfRef.o_data_ready = ((IData)(vlSelfRef.rst_n) 
-                              && (IData)(vlSelfRef.vec_multi_core__DOT__o_valid_stage1));
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & vlSelfRef.vec_multi_core__DOT__weight_reg)) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & vlSelfRef.vec_multi_core__DOT__weight_reg)) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & vlSelfRef.vec_multi_core__DOT__weight_reg)))))))))) {
+                if ((0U != (((1U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg)) 
+                             << 2U) | (((0U == (3U 
+                                                & vlSelfRef.vec_multi_core__DOT__weight_reg)) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & vlSelfRef.vec_multi_core__DOT__weight_reg)))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[0]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & vlSelfRef.vec_multi_core__DOT__weight_reg));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__31__03a0__KET__ 
+                = ((2U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg))
+                    ? VL_EXTENDS_II(32,8, (0x000000ffU 
+                                           & vlSelfRef.i_data[0U]))
+                    : ((0U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg))
+                        ? (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                                  & vlSelfRef.i_data[0U])))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__31__03a0__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__31__03a0__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__31__03a0__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 2U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 2U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 2U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 2U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 2U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 2U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[1]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 2U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__63__03a32__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 2U))) ? VL_EXTENDS_II(32,8, 
+                                                          (0x000000ffU 
+                                                           & (vlSelfRef.i_data[0U] 
+                                                              >> 8U)))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 2U))) ? (- 
+                                                 VL_EXTENDS_II(32,8, 
+                                                               (0x000000ffU 
+                                                                & (vlSelfRef.i_data[0U] 
+                                                                   >> 8U))))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__63__03a32__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__63__03a32__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__63__03a32__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 4U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 4U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 4U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 4U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 4U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 4U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[2]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 4U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__95__03a64__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 4U))) ? VL_EXTENDS_II(32,8, 
+                                                          (0x000000ffU 
+                                                           & (vlSelfRef.i_data[0U] 
+                                                              >> 0x00000010U)))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 4U))) ? (- 
+                                                 VL_EXTENDS_II(32,8, 
+                                                               (0x000000ffU 
+                                                                & (vlSelfRef.i_data[0U] 
+                                                                   >> 0x00000010U))))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__95__03a64__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__95__03a64__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__95__03a64__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 6U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 6U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 6U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 6U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 6U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 6U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[3]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 6U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__127__03a96__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 6U))) ? VL_EXTENDS_II(32,8, 
+                                                          (vlSelfRef.i_data[0U] 
+                                                           >> 0x00000018U))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 6U))) ? (- 
+                                                 VL_EXTENDS_II(32,8, 
+                                                               (vlSelfRef.i_data[0U] 
+                                                                >> 0x00000018U)))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__127__03a96__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__127__03a96__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__127__03a96__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 8U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 8U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 8U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 8U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 8U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 8U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[4]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 8U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__159__03a128__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 8U))) ? VL_EXTENDS_II(32,8, 
+                                                          (0x000000ffU 
+                                                           & vlSelfRef.i_data[1U]))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 8U))) ? (- 
+                                                 VL_EXTENDS_II(32,8, 
+                                                               (0x000000ffU 
+                                                                & vlSelfRef.i_data[1U])))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__159__03a128__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__159__03a128__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__159__03a128__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x0aU))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x0aU))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x0aU))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x0aU))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x0aU))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x0aU))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[5]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x0aU)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__191__03a160__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x0aU))) ? VL_EXTENDS_II(32,8, 
+                                                             (0x000000ffU 
+                                                              & (vlSelfRef.i_data[1U] 
+                                                                 >> 8U)))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x0aU))) ? 
+                       (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                               & (vlSelfRef.i_data[1U] 
+                                                  >> 8U))))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__191__03a160__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__191__03a160__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__191__03a160__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x0cU))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x0cU))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x0cU))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x0cU))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x0cU))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x0cU))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[6]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x0cU)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__223__03a192__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x0cU))) ? VL_EXTENDS_II(32,8, 
+                                                             (0x000000ffU 
+                                                              & (vlSelfRef.i_data[1U] 
+                                                                 >> 0x00000010U)))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x0cU))) ? 
+                       (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                               & (vlSelfRef.i_data[1U] 
+                                                  >> 0x00000010U))))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__223__03a192__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__223__03a192__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__223__03a192__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x0eU))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x0eU))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x0eU))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x0eU))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x0eU))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x0eU))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[7]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x0eU)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__255__03a224__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x0eU))) ? VL_EXTENDS_II(32,8, 
+                                                             (vlSelfRef.i_data[1U] 
+                                                              >> 0x00000018U))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x0eU))) ? 
+                       (- VL_EXTENDS_II(32,8, (vlSelfRef.i_data[1U] 
+                                               >> 0x00000018U)))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__255__03a224__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__255__03a224__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__255__03a224__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x10U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x10U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x10U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x10U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x10U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x10U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[8]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x10U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__287__03a256__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x10U))) ? VL_EXTENDS_II(32,8, 
+                                                             (0x000000ffU 
+                                                              & vlSelfRef.i_data[2U]))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x10U))) ? 
+                       (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                               & vlSelfRef.i_data[2U])))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__287__03a256__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__287__03a256__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__287__03a256__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x12U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x12U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x12U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x12U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x12U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x12U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[9]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x12U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__319__03a288__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x12U))) ? VL_EXTENDS_II(32,8, 
+                                                             (0x000000ffU 
+                                                              & (vlSelfRef.i_data[2U] 
+                                                                 >> 8U)))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x12U))) ? 
+                       (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                               & (vlSelfRef.i_data[2U] 
+                                                  >> 8U))))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__319__03a288__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__319__03a288__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__319__03a288__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x14U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x14U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x14U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x14U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x14U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x14U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[10]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x14U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__351__03a320__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x14U))) ? VL_EXTENDS_II(32,8, 
+                                                             (0x000000ffU 
+                                                              & (vlSelfRef.i_data[2U] 
+                                                                 >> 0x00000010U)))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x14U))) ? 
+                       (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                               & (vlSelfRef.i_data[2U] 
+                                                  >> 0x00000010U))))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__351__03a320__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__351__03a320__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__351__03a320__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x16U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x16U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x16U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x16U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x16U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x16U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[11]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x16U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__383__03a352__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x16U))) ? VL_EXTENDS_II(32,8, 
+                                                             (vlSelfRef.i_data[2U] 
+                                                              >> 0x00000018U))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x16U))) ? 
+                       (- VL_EXTENDS_II(32,8, (vlSelfRef.i_data[2U] 
+                                               >> 0x00000018U)))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__383__03a352__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__383__03a352__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__383__03a352__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x18U))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x18U))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x18U))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x18U))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x18U))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x18U))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[12]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x18U)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__415__03a384__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x18U))) ? VL_EXTENDS_II(32,8, 
+                                                             (0x000000ffU 
+                                                              & vlSelfRef.i_data[3U]))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x18U))) ? 
+                       (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                               & vlSelfRef.i_data[3U])))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__415__03a384__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__415__03a384__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__415__03a384__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x1aU))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x1aU))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x1aU))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x1aU))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x1aU))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x1aU))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[13]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x1aU)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__447__03a416__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x1aU))) ? VL_EXTENDS_II(32,8, 
+                                                             (0x000000ffU 
+                                                              & (vlSelfRef.i_data[3U] 
+                                                                 >> 8U)))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x1aU))) ? 
+                       (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                               & (vlSelfRef.i_data[3U] 
+                                                  >> 8U))))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__447__03a416__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__447__03a416__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__447__03a416__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (3U 
+                                                      & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x1cU))) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (3U 
+                                                         & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                            >> 0x1cU))) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (3U 
+                                                          & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                             >> 0x1cU))))))))))) {
+                if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                           >> 0x1cU))) 
+                             << 2U) | (((0U == (3U 
+                                                & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                   >> 0x1cU))) 
+                                        << 1U) | (2U 
+                                                  == 
+                                                  (3U 
+                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x1cU))))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[14]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                              >> 0x1cU)));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__479__03a448__KET__ 
+                = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                 >> 0x1cU))) ? VL_EXTENDS_II(32,8, 
+                                                             (0x000000ffU 
+                                                              & (vlSelfRef.i_data[3U] 
+                                                                 >> 0x00000010U)))
+                    : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x1cU))) ? 
+                       (- VL_EXTENDS_II(32,8, (0x000000ffU 
+                                               & (vlSelfRef.i_data[3U] 
+                                                  >> 0x00000010U))))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__479__03a448__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__479__03a448__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__479__03a448__KET__ = 0U;
+    }
+    if (vlSelfRef.rst_n) {
+        if (vlSelfRef.i_data_valid) {
+            if (VL_UNLIKELY(((1U & (~ VL_ONEHOT_I((
+                                                   ((1U 
+                                                     == 
+                                                     (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                      >> 0x1eU)) 
+                                                    << 2U) 
+                                                   | (((0U 
+                                                        == 
+                                                        (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                         >> 0x1eU)) 
+                                                       << 1U) 
+                                                      | (2U 
+                                                         == 
+                                                         (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                          >> 0x1eU)))))))))) {
+                if ((0U != (((1U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                     >> 0x1eU)) << 2U) 
+                            | (((0U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                        >> 0x1eU)) 
+                                << 1U) | (2U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                                 >> 0x1eU)))))) {
+                    if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
+                        VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:47: Assertion failed in %Nvec_multi_core.gen_PE[15]: unique case, but multiple matches found for '2'h%x'\n",0,
+                                     64,VL_TIME_UNITED_Q(1000),
+                                     -9,vlSymsp->name(),
+                                     2,(vlSelfRef.vec_multi_core__DOT__weight_reg 
+                                        >> 0x1eU));
+                        VL_STOP_MT("vec_multi_core.sv", 47, "");
+                    }
+                }
+            }
+            __Vdly__vec_multi_core__DOT__product__BRA__511__03a480__KET__ 
+                = ((2U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                           >> 0x1eU)) ? VL_EXTENDS_II(32,8, 
+                                                      (vlSelfRef.i_data[3U] 
+                                                       >> 0x00000018U))
+                    : ((0U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
+                               >> 0x1eU)) ? (- VL_EXTENDS_II(32,8, 
+                                                             (vlSelfRef.i_data[3U] 
+                                                              >> 0x00000018U)))
+                        : 0U));
+        } else {
+            __Vdly__vec_multi_core__DOT__product__BRA__511__03a480__KET__ 
+                = vlSelfRef.vec_multi_core__DOT__product__BRA__511__03a480__KET__;
+        }
+    } else {
+        __Vdly__vec_multi_core__DOT__product__BRA__511__03a480__KET__ = 0U;
+    }
     if (vlSelfRef.rst_n) {
         vlSelfRef.o_result = (((vlSelfRef.vec_multi_core__DOT__sum_temp[0U] 
                                 + vlSelfRef.vec_multi_core__DOT__sum_temp[1U]) 
@@ -367,586 +1095,42 @@ void Vvec_multi_core___024root___nba_sequent__TOP__0(Vvec_multi_core___024root* 
         vlSelfRef.vec_multi_core__DOT__sum_temp[2U] = 0U;
         vlSelfRef.vec_multi_core__DOT__sum_temp[3U] = 0U;
     }
+    vlSelfRef.o_data_ready = ((IData)(vlSelfRef.rst_n) 
+                              && (IData)(vlSelfRef.vec_multi_core__DOT__o_valid_stage1));
     vlSelfRef.vec_multi_core__DOT__o_valid_stage1 = 
         ((IData)(vlSelfRef.rst_n) && (IData)(vlSelfRef.i_data_valid));
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg)) 
-                               << 2U) | (((0U == (3U 
-                                                  & vlSelfRef.vec_multi_core__DOT__weight_reg)) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & vlSelfRef.vec_multi_core__DOT__weight_reg)))))))) {
-        if ((0U != (((1U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg)) 
-                     << 2U) | (((0U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg)) 
-                                << 1U) | (2U == (3U 
-                                                 & vlSelfRef.vec_multi_core__DOT__weight_reg)))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[0]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & vlSelfRef.vec_multi_core__DOT__weight_reg));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 2U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 2U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 2U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 2U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 2U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 2U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[1]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 2U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 4U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 4U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 4U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 4U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 4U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 4U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[2]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 4U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 6U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 6U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 6U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 6U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 6U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 6U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[3]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 6U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 8U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 8U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 8U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 8U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 8U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 8U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[4]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 8U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x0aU))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x0aU))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x0aU))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x0aU))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x0aU))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x0aU))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[5]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x0aU)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x0cU))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x0cU))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x0cU))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x0cU))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x0cU))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x0cU))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[6]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x0cU)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x0eU))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x0eU))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x0eU))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x0eU))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x0eU))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x0eU))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[7]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x0eU)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x10U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x10U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x10U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x10U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x10U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x10U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[8]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x10U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x12U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x12U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x12U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x12U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x12U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x12U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[9]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x12U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x14U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x14U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x14U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x14U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x14U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x14U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[10]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x14U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x16U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x16U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x16U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x16U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x16U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x16U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[11]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x16U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x18U))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x18U))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x18U))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x18U))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x18U))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x18U))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[12]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x18U)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x1aU))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x1aU))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x1aU))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x1aU))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x1aU))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x1aU))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[13]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x1aU)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                             >> 0x1cU))) 
-                               << 2U) | (((0U == (3U 
-                                                  & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x1cU))) 
-                                          << 1U) | 
-                                         (2U == (3U 
-                                                 & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                    >> 0x1cU))))))))) {
-        if ((0U != (((1U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                   >> 0x1cU))) << 2U) 
-                    | (((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                      >> 0x1cU))) << 1U) 
-                       | (2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x1cU))))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[14]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(3U 
-                                                   & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x1cU)));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
-    if ((1U & (~ VL_ONEHOT_I((((1U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                       >> 0x1eU)) << 2U) 
-                              | (((0U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                          >> 0x1eU)) 
-                                  << 1U) | (2U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                   >> 0x1eU)))))))) {
-        if ((0U != (((1U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x1eU)) << 2U) | ((
-                                                   (0U 
-                                                    == 
-                                                    (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                     >> 0x1eU)) 
-                                                   << 1U) 
-                                                  | (2U 
-                                                     == 
-                                                     (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                      >> 0x1eU)))))) {
-            if (VL_UNLIKELY((vlSymsp->_vm_contextp__->assertOn()))) {
-                VL_WRITEF_NX("[%0t] %%Error: vec_multi_core.sv:44: Assertion failed in %Nvec_multi_core.gen_PE[15]: unique case, but multiple matches found for '2'h%x'\n",0,
-                             64,VL_TIME_UNITED_Q(1000),
-                             -9,vlSymsp->name(),2,(vlSelfRef.vec_multi_core__DOT__weight_reg 
-                                                   >> 0x1eU));
-                VL_STOP_MT("vec_multi_core.sv", 44, "");
-            }
-        }
-    }
     vlSelfRef.vec_multi_core__DOT__product__BRA__159__03a128__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 8U))) ? VL_EXTENDS_II(32,8, 
-                                                  (0x000000ffU 
-                                                   & vlSelfRef.i_data[1U]))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 8U))) ? (- VL_EXTENDS_II(32,8, 
-                                                         (0x000000ffU 
-                                                          & vlSelfRef.i_data[1U])))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__159__03a128__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__191__03a160__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000000aU))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[1U] 
-                                                               >> 8U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000000aU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[1U] 
-                                                                    >> 8U))))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__191__03a160__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__223__03a192__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000000cU))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[1U] 
-                                                               >> 0x00000010U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000000cU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[1U] 
-                                                                    >> 0x00000010U))))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__223__03a192__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__255__03a224__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000000eU))) ? VL_EXTENDS_II(32,8, 
-                                                           (vlSelfRef.i_data[1U] 
-                                                            >> 0x00000018U))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000000eU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (vlSelfRef.i_data[1U] 
-                                                                 >> 0x00000018U)))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__255__03a224__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__31__03a0__KET__ 
-        = ((2U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg))
-            ? VL_EXTENDS_II(32,8, (0x000000ffU & vlSelfRef.i_data[0U]))
-            : ((0U == (3U & vlSelfRef.vec_multi_core__DOT__weight_reg))
-                ? (- VL_EXTENDS_II(32,8, (0x000000ffU 
-                                          & vlSelfRef.i_data[0U])))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__31__03a0__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__63__03a32__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 2U))) ? VL_EXTENDS_II(32,8, 
-                                                  (0x000000ffU 
-                                                   & (vlSelfRef.i_data[0U] 
-                                                      >> 8U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 2U))) ? (- VL_EXTENDS_II(32,8, 
-                                                         (0x000000ffU 
-                                                          & (vlSelfRef.i_data[0U] 
-                                                             >> 8U))))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__63__03a32__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__95__03a64__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 4U))) ? VL_EXTENDS_II(32,8, 
-                                                  (0x000000ffU 
-                                                   & (vlSelfRef.i_data[0U] 
-                                                      >> 0x00000010U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 4U))) ? (- VL_EXTENDS_II(32,8, 
-                                                         (0x000000ffU 
-                                                          & (vlSelfRef.i_data[0U] 
-                                                             >> 0x00000010U))))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__95__03a64__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__127__03a96__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 6U))) ? VL_EXTENDS_II(32,8, 
-                                                  (vlSelfRef.i_data[0U] 
-                                                   >> 0x00000018U))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 6U))) ? (- VL_EXTENDS_II(32,8, 
-                                                         (vlSelfRef.i_data[0U] 
-                                                          >> 0x00000018U)))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__127__03a96__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__415__03a384__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000018U))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & vlSelfRef.i_data[3U]))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000018U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & vlSelfRef.i_data[3U])))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__415__03a384__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__447__03a416__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000001aU))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[3U] 
-                                                               >> 8U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000001aU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[3U] 
-                                                                    >> 8U))))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__447__03a416__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__479__03a448__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x0000001cU))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[3U] 
-                                                               >> 0x00000010U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x0000001cU))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[3U] 
-                                                                    >> 0x00000010U))))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__479__03a448__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__511__03a480__KET__ 
-        = ((2U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                   >> 0x0000001eU)) ? VL_EXTENDS_II(32,8, 
-                                                    (vlSelfRef.i_data[3U] 
-                                                     >> 0x00000018U))
-            : ((0U == (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                       >> 0x0000001eU)) ? (- VL_EXTENDS_II(32,8, 
-                                                           (vlSelfRef.i_data[3U] 
-                                                            >> 0x00000018U)))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__511__03a480__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__287__03a256__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000010U))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & vlSelfRef.i_data[2U]))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000010U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & vlSelfRef.i_data[2U])))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__287__03a256__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__319__03a288__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000012U))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[2U] 
-                                                               >> 8U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000012U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[2U] 
-                                                                    >> 8U))))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__319__03a288__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__351__03a320__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000014U))) ? VL_EXTENDS_II(32,8, 
-                                                           (0x000000ffU 
-                                                            & (vlSelfRef.i_data[2U] 
-                                                               >> 0x00000010U)))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000014U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (0x000000ffU 
-                                                                 & (vlSelfRef.i_data[2U] 
-                                                                    >> 0x00000010U))))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__351__03a320__KET__;
     vlSelfRef.vec_multi_core__DOT__product__BRA__383__03a352__KET__ 
-        = ((2U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                         >> 0x00000016U))) ? VL_EXTENDS_II(32,8, 
-                                                           (vlSelfRef.i_data[2U] 
-                                                            >> 0x00000018U))
-            : ((0U == (3U & (vlSelfRef.vec_multi_core__DOT__weight_reg 
-                             >> 0x00000016U))) ? (- 
-                                                  VL_EXTENDS_II(32,8, 
-                                                                (vlSelfRef.i_data[2U] 
-                                                                 >> 0x00000018U)))
-                : 0U));
+        = __Vdly__vec_multi_core__DOT__product__BRA__383__03a352__KET__;
 }
 
 void Vvec_multi_core___024root___eval_nba(Vvec_multi_core___024root* vlSelf) {
@@ -956,7 +1140,7 @@ void Vvec_multi_core___024root___eval_nba(Vvec_multi_core___024root* vlSelf) {
     // Body
     if ((3ULL & vlSelfRef.__VnbaTriggered[0U])) {
         Vvec_multi_core___024root___nba_sequent__TOP__0(vlSelf);
-        vlSelfRef.__Vm_traceActivity[2U] = 1U;
+        vlSelfRef.__Vm_traceActivity[1U] = 1U;
     }
 }
 
@@ -1014,20 +1198,8 @@ void Vvec_multi_core___024root___eval(Vvec_multi_core___024root* vlSelf) {
     Vvec_multi_core__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     auto& vlSelfRef = std::ref(*vlSelf).get();
     // Locals
-    IData/*31:0*/ __VicoIterCount;
     IData/*31:0*/ __VnbaIterCount;
     // Body
-    __VicoIterCount = 0U;
-    vlSelfRef.__VicoFirstIteration = 1U;
-    do {
-        if (VL_UNLIKELY(((0x00000064U < __VicoIterCount)))) {
-#ifdef VL_DEBUG
-            Vvec_multi_core___024root___dump_triggers__ico(vlSelfRef.__VicoTriggered, "ico"s);
-#endif
-            VL_FATAL_MT("vec_multi_core.sv", 7, "", "Input combinational region did not converge after 100 tries");
-        }
-        __VicoIterCount = ((IData)(1U) + __VicoIterCount);
-    } while (Vvec_multi_core___024root___eval_phase__ico(vlSelf));
     __VnbaIterCount = 0U;
     do {
         if (VL_UNLIKELY(((0x00000064U < __VnbaIterCount)))) {

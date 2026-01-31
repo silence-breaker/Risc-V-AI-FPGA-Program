@@ -32,8 +32,6 @@ VM_CLASSES_FAST += \
 VM_CLASSES_SLOW += \
   Vvec_multi_core___024root__Slow \
   Vvec_multi_core___024root__0__Slow \
-  Vvec_multi_core___024unit__Slow \
-  Vvec_multi_core___024unit__0__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization
 VM_SUPPORT_FAST += \

@@ -15,7 +15,6 @@
 
 // INCLUDE MODULE CLASSES
 #include "Vvec_multi_core___024root.h"
-#include "Vvec_multi_core___024unit.h"
 
 // SYMS CLASS (contains all model state)
 class alignas(VL_CACHE_LINE_BYTES) Vvec_multi_core__Syms final : public VerilatedSyms {

@@ -5,8 +5,6 @@
 #include "Vvec_multi_core__Trace__0.cpp"
 #include "Vvec_multi_core___024root__Slow.cpp"
 #include "Vvec_multi_core___024root__0__Slow.cpp"
-#include "Vvec_multi_core___024unit__Slow.cpp"
-#include "Vvec_multi_core___024unit__0__Slow.cpp"
 #include "Vvec_multi_core__Syms__Slow.cpp"
 #include "Vvec_multi_core__Trace__0__Slow.cpp"
 #include "Vvec_multi_core__TraceDecls__0__Slow.cpp"

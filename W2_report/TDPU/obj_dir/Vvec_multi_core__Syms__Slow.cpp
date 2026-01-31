@@ -11,7 +11,7 @@ Vvec_multi_core__Syms::Vvec_multi_core__Syms(VerilatedContext* contextp, const c
     , TOP{this, namep}
 {
     // Check resources
-    Verilated::stackCheck(250);
+    Verilated::stackCheck(254);
     // Setup sub module instances
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-9);

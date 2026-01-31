@@ -32,8 +32,8 @@ VL_ATTR_COLD void Vvec_multi_core___024root__trace_init_sub__TOP__0(Vvec_multi_c
     tracep->declBus(c+32,0,"i_weight",-1, VerilatedTraceSigDirection::INPUT, VerilatedTraceSigKind::WIRE, VerilatedTraceSigType::LOGIC, false,-1, 31,0);
     tracep->declBit(c+33,0,"o_data_ready",-1, VerilatedTraceSigDirection::OUTPUT, VerilatedTraceSigKind::WIRE, VerilatedTraceSigType::LOGIC, false,-1);
     tracep->declBus(c+34,0,"o_result",-1, VerilatedTraceSigDirection::OUTPUT, VerilatedTraceSigKind::WIRE, VerilatedTraceSigType::LOGIC, false,-1, 31,0);
-    tracep->declBus(c+17,0,"weight_reg",-1, VerilatedTraceSigDirection::NONE, VerilatedTraceSigKind::VAR, VerilatedTraceSigType::LOGIC, false,-1, 31,0);
-    tracep->declArray(c+1,0,"product",-1, VerilatedTraceSigDirection::NONE, VerilatedTraceSigKind::VAR, VerilatedTraceSigType::LOGIC, false,-1, 511,0);
+    tracep->declBus(c+1,0,"weight_reg",-1, VerilatedTraceSigDirection::NONE, VerilatedTraceSigKind::VAR, VerilatedTraceSigType::LOGIC, false,-1, 31,0);
+    tracep->declArray(c+2,0,"product",-1, VerilatedTraceSigDirection::NONE, VerilatedTraceSigKind::VAR, VerilatedTraceSigType::LOGIC, false,-1, 511,0);
     tracep->declArray(c+18,0,"sum_temp",-1, VerilatedTraceSigDirection::NONE, VerilatedTraceSigKind::VAR, VerilatedTraceSigType::LOGIC, false,-1, 127,0);
     tracep->declBit(c+22,0,"o_valid_stage1",-1, VerilatedTraceSigDirection::NONE, VerilatedTraceSigKind::VAR, VerilatedTraceSigType::LOGIC, false,-1);
     tracep->pushPrefix("unnamedblk1", VerilatedTracePrefixType::SCOPE_MODULE);
@@ -104,6 +104,7 @@ VL_ATTR_COLD void Vvec_multi_core___024root__trace_full_0_sub_0(Vvec_multi_core_
     VlWide<16>/*511:0*/ __Vtemp_14;
     // Body
     uint32_t* const oldp VL_ATTR_UNUSED = bufp->oldp(vlSymsp->__Vm_baseCode);
+    bufp->fullIData(oldp+1,(vlSelfRef.vec_multi_core__DOT__weight_reg),32);
     __Vtemp_14[0U] = vlSelfRef.vec_multi_core__DOT__product__BRA__31__03a0__KET__;
     __Vtemp_14[1U] = vlSelfRef.vec_multi_core__DOT__product__BRA__63__03a32__KET__;
     __Vtemp_14[2U] = vlSelfRef.vec_multi_core__DOT__product__BRA__95__03a64__KET__;
@@ -125,8 +126,7 @@ VL_ATTR_COLD void Vvec_multi_core___024root__trace_full_0_sub_0(Vvec_multi_core_
                                          << 0x00000020U) 
                                         | (QData)((IData)(vlSelfRef.vec_multi_core__DOT__product__BRA__479__03a448__KET__))) 
                                        >> 0x00000020U));
-    bufp->fullWData(oldp+1,(__Vtemp_14),512);
-    bufp->fullIData(oldp+17,(vlSelfRef.vec_multi_core__DOT__weight_reg),32);
+    bufp->fullWData(oldp+2,(__Vtemp_14),512);
     bufp->fullWData(oldp+18,(vlSelfRef.vec_multi_core__DOT__sum_temp),128);
     bufp->fullBit(oldp+22,(vlSelfRef.vec_multi_core__DOT__o_valid_stage1));
     bufp->fullIData(oldp+23,(vlSelfRef.vec_multi_core__DOT__unnamedblk1__DOT__k),32);

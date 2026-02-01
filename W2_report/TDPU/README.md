@@ -8,3 +8,7 @@
 - sim_main.cpp: 仿真主程序
 - vec_multi_core.sv: 可配置并行度和数据深度的向量乘法核心模块
 - package_def.sv: TDPU相关宏包定义
+
+## 仿真运行图
+
+![alt text](3753516ecb637feaf29f81cbba16e427.png)

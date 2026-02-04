@@ -70,38 +70,61 @@ module vec_multi_core #(
   endgenerate
 
 
-  //2.加法树 Part1
-  logic signed [3:0][31:0] sum_temp;  //中间和
-  logic o_valid_stage1;//由于加法树分了两层，所以valid信号也要分两段传递，否则时许不收敛
+  //2. 参数化加法树
+  // 计算加法树的层数: $clog2(LEN)
+  localparam int TREE_DEPTH = $clog2(LEN);
+  
+  // 定义加法树的中间信号
+  // tree_data[level][index]
+  // 第0层是 product 结果 (LEN个)
+  // 第1层是 LEN/2 个结果
+  // ...
+  // 第TREE_DEPTH层是 1 个结果
+  logic signed [31:0] tree_data [TREE_DEPTH:0][LEN-1:0];
+  logic [TREE_DEPTH:0] tree_valid;
 
-  always_ff @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-      for (int k = 0; k < 4; k++) sum_temp[k] <= '0;
-      o_valid_stage1 <= 1'b0;
-    end else begin
-      if (product_ready) begin
+  // 将PE层的输出连接到加法树第0层
+  always_comb begin
+    for (int i = 0; i < LEN; i++) begin
+      tree_data[0][i] = product[i];
+    end
+    tree_valid[0] = product_ready;
+  end
 
-        sum_temp[0] <= (product[0] + product[1]) + (product[2] + product[3]);
-        sum_temp[1] <= (product[4] + product[5]) + (product[6] + product[7]);
-        sum_temp[2] <= (product[8] + product[9]) + (product[10] + product[11]);
-        sum_temp[3] <= (product[12] + product[13]) + (product[14] + product[15]);
-
-
+  // 生成加法树流水线
+  generate
+    for (genvar level = 0; level < TREE_DEPTH; level++) begin : gen_tree_level
+      // 当前层节点数
+      localparam int NUM_NODES = LEN >> (level + 1);
+      
+      for (genvar k = 0; k < NUM_NODES; k++) begin : gen_adder
+        always_ff @(posedge clk or negedge rst_n) begin
+          if (!rst_n) begin
+            tree_data[level+1][k] <= 32'sd0;
+          end else begin
+            if (tree_valid[level]) begin
+              // 相邻两个节点相加
+              tree_data[level+1][k] <= tree_data[level][2*k] + tree_data[level][2*k+1];
+            end
+          end
+        end
       end
-      o_valid_stage1 <= product_ready;
+      
+      // Valid信号流水线传递
+      always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+          tree_valid[level+1] <= 1'b0;
+        end else begin
+          tree_valid[level+1] <= tree_valid[level];
+        end
+      end
     end
-  end
+  endgenerate
 
-  //3.加法树 Part2 & 输出寄存器
-  always_ff @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-      o_result <= '0;  //复位不可放到加法树part1,否则会计算错误
-      o_data_ready <= 1'b0;
-    end else begin
-      o_data_ready <= o_valid_stage1;
-      o_result <= sum_temp[0] + sum_temp[1] + sum_temp[2] + sum_temp[3];
-    end
-  end
+  //3. 输出处理
+  // 最终结果在 tree_data[TREE_DEPTH][0]
+  assign o_result = tree_data[TREE_DEPTH][0];
+  assign o_data_ready = tree_valid[TREE_DEPTH];
 
 
 endmodule

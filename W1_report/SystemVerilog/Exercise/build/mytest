@@ -1,0 +1,36 @@
+#! /usr/bin/vvp
+:ivl_version "11.0 (stable)";
+:ivl_delay_selection "TYPICAL";
+:vpi_time_precision + 0;
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/system.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/vhdl_sys.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/vhdl_textio.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/v2005_math.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/va_math.vpi";
+:vpi_module "/usr/lib/x86_64-linux-gnu/ivl/v2009.vpi";
+S_0x5637ac846270 .scope package, "$unit" "$unit" 2 1;
+ .timescale 0 0;
+S_0x5637ac81fcf0 .scope module, "test_vars" "test_vars" 3 2;
+ .timescale 0 0;
+v0x5637ac831380_0 .var "m_var1", 7 0;
+v0x5637ac8317e0_0 .var "m_var2", 15 0;
+    .scope S_0x5637ac81fcf0;
+T_0 ;
+    %pushi/vec4 255, 0, 8;
+    %store/vec4 v0x5637ac831380_0, 0, 8;
+    %pushi/vec4 65535, 0, 16;
+    %store/vec4 v0x5637ac8317e0_0, 0, 16;
+    %vpi_call/w 3 17 "$display", "----------------------------------------" {0 0 0};
+    %vpi_call/w 3 18 "$display", "Simulation Result:" {0 0 0};
+    %vpi_call/w 3 19 "$display", "m_var1 = 0x%0h", v0x5637ac831380_0 {0 0 0};
+    %vpi_call/w 3 20 "$display", "m_var2 = 0x%0h", v0x5637ac8317e0_0 {0 0 0};
+    %vpi_call/w 3 21 "$display", "----------------------------------------" {0 0 0};
+    %vpi_call/w 3 24 "$finish" {0 0 0};
+    %end;
+    .thread T_0;
+# The file index is used to find the file name in the following table.
+:file_names 4;
+    "N/A";
+    "<interactive>";
+    "-";
+    "Ex1.sv";

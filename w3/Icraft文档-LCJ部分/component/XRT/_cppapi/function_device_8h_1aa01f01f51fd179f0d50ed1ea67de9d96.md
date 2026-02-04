@@ -1,0 +1,19 @@
+# Function icraft::xrt::operator<
+
+**Defined in:** `File device.h`
+
+
+                  
+  
+
+## Function Documentation#
+
+```cpp
+bool icraft::xrt::operator<(const MemPtr &lhs, const MemPtr &rhs)#
+```
+
+为MemPtr重载小于号运算符 
+
+---
+
+                

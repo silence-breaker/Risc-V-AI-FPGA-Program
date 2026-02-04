@@ -1,0 +1,12 @@
+# Typedef icraft::xir::Elu
+**Defined in:** `File elu.h`
+
+
+
+## Typedef Documentation#
+
+警告
+
+doxygentypedef: Cannot find typedef “icraft::xir::Elu” in doxygen xml output for project “Icraft XIR” from directory: ........\_doxygen\xml
+
+                

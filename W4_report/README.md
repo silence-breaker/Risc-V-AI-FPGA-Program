@@ -18,9 +18,15 @@
 ![alt text](讨论.jpg)
 ![alt text](发布.jpg)
 - 让nanobot每天下午两点钟进入我的gmail读取最新的google scholar alerts邮件，并把里面的内容整理汇总到我的notion数据库里，并且在telegram上给我发送一条消息提醒我查看
+
 ![alt text](image.png)
+
 - 向nanobot询问一些数字IC学界的问题
 ![alt text](image-1.png)
+
+### 源码解析，了解AI agent框架
+
+[nanobot核心代码解析](nanobot核心代码解析.md)
 
 ## 一生一芯项目学习
 
